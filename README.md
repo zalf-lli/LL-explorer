@@ -75,7 +75,7 @@ After you push to `main`:
 
 1. Open the repository on GitHub
 2. Go to `Settings` -> `Pages`
-3. Set the source to `GitHub Actions` if GitHub asks
+3. Under `Build and deployment`, set `Source` to `GitHub Actions`
 4. Wait for the `Deploy GitHub Pages` workflow to finish
 
 Your public preview URL should then be:
@@ -91,6 +91,8 @@ cd app
 npm run build
 npm run preview
 ```
+
+If the first workflow run fails with a `Get Pages site failed` or `Not Found` error, Pages has not been enabled for the repository yet. Open `Settings` -> `Pages`, switch the source to `GitHub Actions`, then re-run the workflow.
 
 ## Everyday editing workflow
 

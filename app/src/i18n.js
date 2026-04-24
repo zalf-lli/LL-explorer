@@ -173,14 +173,14 @@ const resources = {
         language: 'Sprache',
       },
       header: {
-        title: 'Living Lab Explorer',
+        title: 'Reallabore Explorer',
       },
       landing: {
-        eyebrow: 'Living Labs',
+        eyebrow: 'Reallabore',
         title: 'Fünf Regionen. Echte Praxis.',
         body:
-          'In fünf Living Labs testen wir gemeinsam mit Praktikerinnen und Praktikern vor Ort innovative Ansätze. Wählen Sie einen Standort auf der Karte, um Rahmenbedingungen, Ziele und Fortschritte zu erkunden.',
-        listTitle: 'Living Labs',
+          'In fünf Reallaboren erproben wir innovative Ansätze gemeinsam mit Praxisakteuren vor Ort. Wählen Sie einen Standort auf der Karte, um Rahmenbedingungen, Ziele und Fortschritte zu erkunden.',
+        listTitle: 'Reallabore',
       },
       kpi: {
         totalArea: 'Gesamtfläche',
