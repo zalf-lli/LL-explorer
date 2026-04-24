@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Living Lab Dashboards — Zukunft Land</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: 'Satoshi', system-ui, sans-serif; background: #f9fef9; color: #022322; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #e5f5ee; }
+  ::-webkit-scrollbar-thumb { background: #83d2af; border-radius: 3px; }
+  button { font-family: inherit; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+
+
+const { useState, useRef, useEffect } = React;
+
+/* ─── Brand tokens ─────────────────────────────────────── */
+const C = {
+  black: '#022322',
+  white: '#ffffff',
+  bg: '#f9fef9',
+  // impuls — orange (primary action / brand)
+  orange: '#eb5b25',
+  orangeDark: '#dc4b14',
+  orangeDeep: '#bb3f11',
+  orangeGhost: '#fce3da',
+  // substrat — teal (headings, dark surfaces)
+  teal: '#005754',
+  tealMid: '#008581',
+  tealLight: '#00b3ad',
+  tealBg: '#00413f',
+  // technik — green (secondary)
+  green: '#225e43',
+  greenMid: '#359269',
+  greenLight: '#5ec597',
+  // keim — lime (highlights)
+  lime: '#c2e077',
+  limeDark: '#9bc72d',
+  limePale: '#f2f8e2',
+  // surfaces / UI
+  surface: '#e5f5ee',
+  surfaceMid: '#daf1e7',
+  surfaceDark: '#bce9d2',
+  muted: '#83d2af',
+  mutedLight: '#c3e9d8',
+  mutedPale: '#e5f5ee',
+  // substrat dark bg
+  darkBg: '#00413f'
+};
+
+
+
+/* ─── LL Icons ──────────────────────────────────────────── */
+const LL_ICONS = [
+  { vb: '0 0 36 36', paths: `<path d="M21.558 8.46191C21.3342 11.2236 20.1352 13.8157 18.1755 15.7744C16.2157 13.8157 15.0167 11.2236 14.793 8.46191C15.0173 5.70032 16.2162 3.10845 18.1755 1.14941C20.1348 3.10845 21.3337 5.70032 21.558 8.46191Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M26.2215 22.0142C23.5585 22.7789 20.7103 22.5715 18.186 21.4292C19.3277 18.9041 21.3299 16.8673 23.835 15.6827C26.4982 14.918 29.3466 15.1259 31.8705 16.2692C30.7293 18.7941 28.7269 20.8305 26.2215 22.0142Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M26.2215 33.2642C23.5585 34.0289 20.7103 33.8215 18.186 32.6792C19.3277 30.1541 21.3299 28.1173 23.835 26.9327C26.4982 26.168 29.3466 26.3759 31.8705 27.5192C30.7293 30.0441 28.7269 32.0805 26.2215 33.2642Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M10.1445 22.0142C12.8076 22.7789 15.6558 22.5716 18.18 21.4292C17.0392 18.9042 15.0374 16.8672 12.5325 15.6827C9.87018 14.9194 7.0232 15.1272 4.5 16.2692C5.6408 18.7929 7.64133 20.8291 10.1445 22.0142Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M10.1445 33.2642C12.8076 34.0289 15.6558 33.8216 18.18 32.6792C17.0392 30.1542 15.0374 28.1172 12.5325 26.9327C9.87018 26.1694 7.0232 26.3772 4.5 27.5192C5.6408 30.0429 7.64133 32.0791 10.1445 33.2642Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M18.1785 15.7744L18.1905 34.8994" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>` },
+  { vb: '0 0 36 36', paths: `<path d="M13.5647 10.1943C13.254 10.1943 13.0022 9.94249 13.0022 9.63184C13.0022 9.32117 13.254 9.06934 13.5647 9.06934" stroke="#C3E9D8" stroke-width="1.5"></path>
+<path d="M13.5647 10.1943C13.8754 10.1943 14.1272 9.94249 14.1272 9.63184C14.1272 9.32117 13.8754 9.06934 13.5647 9.06934" stroke="#C3E9D8" stroke-width="1.5"></path>
+<path d="M8.37295 1.125C7.81128 1.125 7.26224 1.29157 6.79526 1.60365C6.32826 1.91573 5.96431 2.35928 5.74945 2.87822C5.53458 3.39716 5.47844 3.96816 5.58812 4.51901C5.69781 5.06987 5.9684 5.57582 6.36566 5.97287C6.76292 6.36992 7.269 6.64023 7.81991 6.74963C8.37083 6.85902 8.9418 6.80258 9.46062 6.58743C9.97944 6.37229 10.4228 6.0081 10.7346 5.54096C11.0465 5.0738 11.2127 4.52466 11.2125 3.963C11.2125 3.59019 11.139 3.22103 10.9963 2.8766C10.8536 2.53218 10.6444 2.21925 10.3807 1.9557C10.117 1.69215 9.80396 1.48313 9.45947 1.3406C9.11498 1.19807 8.74576 1.1248 8.37295 1.125Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15.9 1.2555C16.5966 1.16896 17.298 1.12538 18 1.125C21.7187 1.12605 25.3328 2.35584 28.2803 4.62312C31.2278 6.8904 33.3435 10.0681 34.2986 13.6621C35.2535 17.256 34.9941 21.0648 33.5607 24.496C32.1275 27.9274 29.6004 30.789 26.3727 32.6358C23.145 34.4825 19.3976 35.211 15.7131 34.7079C12.0287 34.2048 8.61366 32.4984 5.99921 29.8539C3.38477 27.2095 1.71738 23.7753 1.25638 20.0853C0.795367 16.3953 1.56656 12.6564 3.45003 9.45" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M4.75952 28.4626C14.004 21.1381 23.301 28.4806 31.2255 28.4806" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M10.7595 15.4648C10.386 18.2053 13.032 20.2483 13.002 25.2403" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M22.0155 10.0195C20.0205 14.572 26.25 21.751 23.3835 26.986" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M17.8936 12.8997C19.3576 16.9752 25.1086 15.9837 25.5091 11.5137" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M7.69946 19.0634C9.27746 23.0999 15 21.9419 15.273 17.4629" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M19.4146 19.9286C21.0646 23.9336 26.7646 22.6901 26.9626 18.2051" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>` },
+  { vb: '0 0 36 36', paths: `<path d="M23.0625 33.75C25.8585 33.75 28.125 31.4835 28.125 28.6875C28.125 25.8915 25.8585 23.625 23.0625 23.625C20.2665 23.625 18 25.8915 18 28.6875C18 31.4835 20.2665 33.75 23.0625 33.75Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M6.1875 33.75C8.98344 33.75 11.25 31.4835 11.25 28.6875C11.25 25.8915 8.98344 23.625 6.1875 23.625C3.39156 23.625 1.125 25.8915 1.125 28.6875C1.125 31.4835 3.39156 33.75 6.1875 33.75Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M6.1875 29.25C5.87683 29.25 5.625 28.9982 5.625 28.6875C5.625 28.3768 5.87683 28.125 6.1875 28.125" stroke="#C3E9D8" stroke-width="1.5"></path>
+<path d="M6.1875 29.25C6.49817 29.25 6.75 28.9982 6.75 28.6875C6.75 28.3768 6.49817 28.125 6.1875 28.125" stroke="#C3E9D8" stroke-width="1.5"></path>
+<path d="M23.0625 29.25C22.7518 29.25 22.5 28.9982 22.5 28.6875C22.5 28.3768 22.7518 28.125 23.0625 28.125" stroke="#C3E9D8" stroke-width="1.5"></path>
+<path d="M23.0625 29.25C23.3732 29.25 23.625 28.9982 23.625 28.6875C23.625 28.3768 23.3732 28.125 23.0625 28.125" stroke="#C3E9D8" stroke-width="1.5"></path>
+<path d="M18.0315 29.25H11.2185" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M28.0935 29.25H32.625C33.2217 29.25 33.7941 29.013 34.216 28.591C34.638 28.1691 34.875 27.5967 34.875 27V18C34.875 17.4033 34.638 16.8309 34.216 16.4089C33.7941 15.987 33.2217 15.75 32.625 15.75H24.75C24.4007 15.75 24.0562 15.8313 23.7438 15.9876C23.4313 16.1437 23.1596 16.3706 22.95 16.65L20.25 20.25V23.625" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M3.375 19.125V6.75H15.75L12.375 19.125" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M1.125 19.125H12.375L14.625 23.625H20.25" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2.625 2.25H15.375C15.7728 2.25 16.1544 2.40804 16.4356 2.68933C16.7169 2.97064 16.875 3.35217 16.875 3.75V6.75H1.125V3.75C1.125 3.35217 1.28304 2.97064 1.56433 2.68933C1.84564 2.40804 2.22717 2.25 2.625 2.25Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>` },
+  { vb: '0 0 32 32', paths: `<path d="M10.0293 3.69531C8.4618 4.63945 7.25332 6.07873 6.59467 7.78598C5.36595 7.89123 4.18409 8.3069 3.16 8.99398C0.16 10.994 1.16 15.994 1.16 15.994C2.10953 16.1579 3.07652 16.196 4.036 16.1073" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M13 24.9941L14 25.9941" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M19 24.9941L18 25.9941" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M22 4C22 2.34267 19.3133 1 16 1C12.6867 1 10 2.34267 10 4C10 6 13.6 5 13.6 5C13.6123 5.29403 13.6859 5.58224 13.8161 5.84609C13.9465 6.10995 14.1307 6.34359 14.3567 6.53199C14.5828 6.72039 14.8457 6.85936 15.1288 6.93996C15.4119 7.02056 15.7085 7.04101 16 7C16.2915 7.04101 16.5881 7.02056 16.8712 6.93996C17.1543 6.85936 17.4172 6.72039 17.6433 6.53199C17.8693 6.34359 18.0535 6.10995 18.1839 5.84609C18.3141 5.58224 18.3877 5.29403 18.4 5C18.4 5 22 6 22 4Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M8.65419 4.74933L7.16086 4C5.89182 3.31112 4.84974 2.26904 4.16086 1C4.16086 1 2.16086 4 3.16086 6C3.59006 6.82564 4.18355 7.5548 4.90486 8.14267" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M24.5 15.2803C24.5 31.9936 17.3453 30.9883 16.872 30.9883H15.128C14.6533 30.9883 7.5 31.9883 7.5 15.2803" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M21.9707 3.69531C23.5383 4.63945 24.7467 6.07873 25.4054 7.78598C26.6342 7.89123 27.816 8.3069 28.84 8.99398C31.84 10.994 30.84 15.994 30.84 15.994C29.8906 16.1579 28.9235 16.196 27.964 16.1073" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M23.7195 23.4609L23.0182 22.9929C20.9076 21.6894 18.476 20.999 15.9955 20.999C13.5148 20.999 11.0833 21.6894 8.97282 22.9929L8.27148 23.4609" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M23.3418 4.74933L24.8405 4C26.1095 3.31112 27.1515 2.26904 27.8405 1C27.8405 1 29.8405 4 28.8405 6C28.4113 6.82564 27.8178 7.5548 27.0965 8.14267" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M11.5137 12C11.2375 12 11.0137 11.7761 11.0137 11.5C11.0137 11.2239 11.2375 11 11.5137 11" stroke="#C3E9D8" stroke-width="1.5"></path>
+<path d="M11.5137 12C11.7898 12 12.0137 11.7761 12.0137 11.5C12.0137 11.2239 11.7898 11 11.5137 11" stroke="#C3E9D8" stroke-width="1.5"></path>
+<path d="M20.5137 12C20.2375 12 20.0137 11.7761 20.0137 11.5C20.0137 11.2239 20.2375 11 20.5137 11" stroke="#C3E9D8" stroke-width="1.5"></path>
+<path d="M20.5137 12C20.7898 12 21.0137 11.7761 21.0137 11.5C21.0137 11.2239 20.7898 11 20.5137 11" stroke="#C3E9D8" stroke-width="1.5"></path>` },
+  { vb: '0 0 36 36', paths: `<path d="M22.3904 10.1745C22.8985 9.39291 23.5893 8.74688 24.4031 8.29225C25.217 7.83761 26.1293 7.58807 27.0612 7.5652C27.9931 7.54233 28.9166 7.74682 29.7518 8.16099C30.5869 8.57515 31.3086 9.18652 31.8544 9.94223C32.4002 10.6979 32.7537 11.5752 32.8844 12.4982C33.015 13.4212 32.9188 14.3622 32.6042 15.2397C32.2895 16.1172 31.7658 16.9048 31.0784 17.5345C30.391 18.1641 29.5606 18.6168 28.6589 18.8535" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M18.1336 23.4004C17.8352 22.7053 17.6821 21.9564 17.6836 21.1999C17.6836 20.0649 18.0202 18.9553 18.6508 18.0115C19.2814 17.0677 20.1777 16.3322 21.2264 15.8978C22.2751 15.4634 23.429 15.3498 24.5422 15.5712C25.6555 15.7927 26.6781 16.3392 27.4807 17.1419C28.2833 17.9445 28.8299 18.9671 29.0513 20.0803C29.2728 21.1936 29.1591 22.3475 28.7248 23.3962C28.2904 24.4448 27.5548 25.3411 26.611 25.9717C25.6673 26.6024 24.5577 26.9389 23.4226 26.9389" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M7.51489 18.8996C6.59335 18.6879 5.7384 18.2517 5.02605 17.6299C4.3137 17.0081 3.76603 16.22 3.43172 15.3355C3.0974 14.451 2.98681 13.4976 3.10977 12.5601C3.23272 11.6226 3.58542 10.7299 4.13651 9.96159C4.6876 9.19323 5.42 8.57294 6.26859 8.15586C7.11719 7.73878 8.0557 7.53783 9.00067 7.57089C9.94565 7.60395 10.8678 7.86998 11.6852 8.34534C12.5026 8.82069 13.1898 9.49065 13.6859 10.2956" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M12.7619 26.937C11.2399 26.937 9.78013 26.3323 8.70386 25.2561C7.62759 24.1798 7.02295 22.7201 7.02295 21.198C7.02295 19.6759 7.62759 18.2162 8.70386 17.1399C9.78013 16.0636 11.2399 15.459 12.7619 15.459C13.9019 15.4578 15.0176 15.7887 15.9725 16.4112C16.9275 17.0338 17.6805 17.921 18.1395 18.9645" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M12.3525 29.1365C12.3525 30.6585 12.9572 32.1183 14.0335 33.1945C15.1097 34.2708 16.5695 34.8755 18.0915 34.8755C19.6136 34.8755 21.0734 34.2708 22.1496 33.1945C23.2259 32.1183 23.8305 30.6585 23.8305 29.1365C23.8305 27.6144 23.2259 26.1546 22.1496 25.0784C21.0734 24.0021 19.6136 23.3975 18.0915 23.3975C16.5695 23.3975 15.1097 24.0021 14.0335 25.0784C12.9572 26.1546 12.3525 27.6144 12.3525 29.1365Z" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M12.5476 15.4595C12.3196 14.6091 12.2903 13.7178 12.462 12.8543C12.6336 11.9909 13.0016 11.1785 13.5375 10.48C14.0734 9.78153 14.7628 9.21571 15.5523 8.82631C16.3419 8.43691 17.2105 8.23438 18.0908 8.23438C18.9712 8.23438 19.8397 8.43691 20.6293 8.82631C21.4188 9.21571 22.1082 9.78153 22.6441 10.48C23.18 11.1785 23.548 11.9909 23.7196 12.8543C23.8913 13.7178 23.862 14.6091 23.6341 15.4595" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M24.7786 3.396C20.2366 3.06 18.0916 8.2335 18.0916 8.2335V1.125" stroke="#C3E9D8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>` },
+];
+
+/* ─── Living Lab data ───────────────────────────────────── */
+const LLS = [
+{ id: 1, num: '01', name: 'East Brandenburg', nameShort: 'East Brandenburg', tagline: 'Multifunctional and diverse arable farming systems', region: 'Brandenburg', area: 2410, farms: 312, tempRange: '9.8°C avg', precip: '540 mm/yr', soil: 'Sandy loam', color: '#9bc72d', colorDark: '#5e781b' },
+{ id: 2, num: '02', name: 'Havelländisches Luch', nameShort: 'Havelländisches Luch', tagline: 'Climate protection and grassland use in fenland regions', region: 'Brandenburg', area: 810, farms: 89, tempRange: '9.5°C avg', precip: '570 mm/yr', soil: 'Peat / gley', color: '#00b3ad', colorDark: '#005754' },
+{ id: 3, num: '03', name: 'N. Hessian Loess Plain', nameShort: 'North Hessian Loess Plain', tagline: 'Intensified organic farming', region: 'Hesse', area: 1140, farms: 204, tempRange: '9.1°C avg', precip: '680 mm/yr', soil: 'Loess / luvisol', color: '#008581', colorDark: '#00413f' },
+{ id: 4, num: '04', name: 'Hessian Low Mtn. Range', nameShort: 'Hessian Mtn.', tagline: 'Integrated plant–animal agricultural systems', region: 'Hesse', area: 960, farms: 178, tempRange: '8.0°C avg', precip: '750 mm/yr', soil: 'Brown earth', color: '#5ec597', colorDark: '#276d4e' },
+{ id: 5, num: '05', name: 'Rheingau', nameShort: 'Rheingau', tagline: 'Multifunctional and climate-resilient viticulture systems', region: 'Hesse', area: 450, farms: 143, tempRange: '11.2°C avg', 'precip': '550 mm/yr', soil: 'Slate / shallow loam', color: '#359269', colorDark: '#225e43' }];
+
+
+/* ─── Map layers ────────────────────────────────────────── */
+const LAYERS = [
+{ id: 'landuse', label: 'Land Use' },
+{ id: 'climate', label: 'Climate' },
+{ id: 'soil', label: 'Soil' },
+{ id: 'economic', label: 'Economic' }];
+
+
+/* ─── Map polygons (11 tiles, 400×260 viewBox) ──────────── */
+const POLYGONS = [
+{ id: 'p1', pts: '0,0 130,0 108,72 52,94 0,72', cat: 'arable' },
+{ id: 'p2', pts: '130,0 292,0 272,52 182,72 108,72', cat: 'forest' },
+{ id: 'p3', pts: '292,0 400,0 400,62 332,84 272,52', cat: 'arable' },
+{ id: 'p4', pts: '0,72 52,94 72,174 0,196', cat: 'grassland' },
+{ id: 'p5', pts: '52,94 182,72 202,152 118,174 72,174', cat: 'arable' },
+{ id: 'p6', pts: '182,72 272,52 312,132 224,164 202,152', cat: 'forest' },
+{ id: 'p7', pts: '272,52 332,84 400,62 400,152 312,132', cat: 'grassland' },
+{ id: 'p8', pts: '0,196 72,174 92,260 0,260', cat: 'settlement' },
+{ id: 'p9', pts: '72,174 202,152 212,260 92,260', cat: 'grassland' },
+{ id: 'p10', pts: '202,152 312,132 368,214 284,260 212,260', cat: 'arable' },
+{ id: 'p11', pts: '312,132 400,152 400,260 368,214', cat: 'water' }];
+
+
+const LAYER_COLORS = {
+  landuse: { arable: '#c2e077', forest: '#276d4e', grassland: '#83d2af', settlement: '#b5ad9e', water: '#8ffffc' },
+  climate: { arable: '#f9d1c2', forest: '#daf1e7', grassland: '#fce3da', settlement: '#f2f8e2', water: '#bdfffd' },
+  soil: { arable: '#d4b483', forest: '#8a6a3e', grassland: '#c4a870', settlement: '#a09080', water: '#8ffffc' },
+  economic: { arable: '#9bc72d', forest: '#225e43', grassland: '#5ec597', settlement: '#dc4b14', water: '#00b3ad' }
+};
+
+const LEGEND_LABELS = {
+  landuse: { arable: 'Arable', forest: 'Forest', grassland: 'Grassland', settlement: 'Settlement', water: 'Water' },
+  climate: { arable: 'Very warm', forest: 'Temperate', grassland: 'Warm', settlement: 'Cool', water: 'Water/Cold' },
+  soil: { arable: 'Sandy loam', forest: 'Brown earth', grassland: 'Loam', settlement: 'Other', water: 'Water body' },
+  economic: { arable: 'High output', forest: 'Low intensity', grassland: 'Medium', settlement: 'Built-up', water: 'N/A' }
+};
+
+/* ─── Chart data per layer ──────────────────────────────── */
+const CHART_DATA = {
+  landuse: { title: 'Land Use / Cover', unit: '% area', bars: [{ l: 'Arable land', v: 58, c: '#c2e077' }, { l: 'Forest', v: 22, c: '#276d4e' }, { l: 'Grassland', v: 14, c: '#83d2af' }, { l: 'Settlement', v: 4, c: '#b5ad9e' }, { l: 'Water', v: 2, c: '#8ffffc' }] },
+  climate: { title: 'Mean Monthly Temp.', unit: '°C', bars: [{ l: 'Jan', v: 1, c: '#00b3ad' }, { l: 'Mar', v: 6, c: '#5ec597' }, { l: 'May', v: 14, c: '#c2e077' }, { l: 'Jul', v: 19, c: '#f29673' }, { l: 'Sep', v: 14, c: '#c2e077' }, { l: 'Nov', v: 5, c: '#5ec597' }] },
+  soil: { title: 'Soil Type Distribution', unit: '% area', bars: [{ l: 'Sandy loam', v: 42, c: '#d4b483' }, { l: 'Loam', v: 28, c: '#c4a870' }, { l: 'Clay loam', v: 18, c: '#8a6a3e' }, { l: 'Peat', v: 8, c: '#5a3e28' }, { l: 'Other', v: 4, c: '#b0a090' }] },
+  economic: { title: 'Farm Size Distribution', unit: '% farms', bars: [{ l: '< 10 ha', v: 24, c: '#eb5b25' }, { l: '10–50 ha', v: 31, c: '#dc4b14' }, { l: '50–200 ha', v: 28, c: '#bb3f11' }, { l: '> 200 ha', v: 17, c: '#7e2b0c' }] }
+};
+
+/* ─── Reusable components ───────────────────────────────── */
+
+function MapSVG({ layer, height = 280 }) {
+  const [hov, setHov] = useState(null);
+  const cols = LAYER_COLORS[layer];
+  return (
+    <svg viewBox="0 0 400 260" width="100%" height={height} style={{ display: 'block' }}>
+      <defs>
+        <filter id="mapShadow">
+          <feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" />
+        </filter>
+      </defs>
+      {POLYGONS.map((p) =>
+      <polygon key={p.id} points={p.pts}
+      fill={cols[p.cat]}
+      stroke={C.white} strokeWidth="1.5"
+      opacity={hov && hov !== p.id ? 0.65 : 1}
+      style={{ cursor: 'pointer', transition: 'opacity 0.12s, fill 0.35s' }}
+      onMouseEnter={() => setHov(p.id)}
+      onMouseLeave={() => setHov(null)} />
+
+      )}
+      {/* Scale bar */}
+      <g transform="translate(16,244)">
+        <rect x="0" y="0" width="50" height="4" fill={C.black} opacity="0.2" rx="1" />
+        <rect x="0" y="0" width="25" height="4" fill={C.black} opacity="0.35" rx="1" />
+        <text x="0" y="-3" fontSize="8" fill={C.black} opacity="0.5" fontFamily="Satoshi,sans-serif">0</text>
+        <text x="46" y="-3" fontSize="8" fill={C.black} opacity="0.5" fontFamily="Satoshi,sans-serif">5 km</text>
+      </g>
+      {/* North arrow */}
+      <g transform="translate(378,18)">
+        <circle r="10" fill="rgba(2,35,34,0.10)" />
+        <polygon points="0,-6 3,4 0,2 -3,4" fill={C.black} opacity="0.5" />
+        <text y="3" textAnchor="middle" fontSize="7" fill={C.black} opacity="0.6" fontFamily="Satoshi,sans-serif" fontWeight="700">N</text>
+      </g>
+    </svg>);
+
+}
+
+function MapLegend({ layer, horizontal = true }) {
+  const cols = LAYER_COLORS[layer];
+  const labels = LEGEND_LABELS[layer];
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px' }}>
+      {Object.entries(labels).map(([cat, label]) =>
+      <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <div style={{ width: 10, height: 10, borderRadius: 2, background: cols[cat], flexShrink: 0, border: '1px solid rgba(2,35,34,0.08)' }} />
+          <span style={{ fontSize: 11, color: C.black, opacity: 0.65 }}>{label}</span>
+        </div>
+      )}
+    </div>);
+
+}
+
+function LayerTabs({ active, onChange, variant = 'light' }) {
+  const isDark = variant === 'dark';
+  return (
+    <div style={{
+      display: 'flex', gap: 0,
+      borderBottom: `2px solid ${isDark ? 'rgba(131,210,175,0.25)' : C.surfaceMid}`
+    }}>
+      {LAYERS.map((l) => {
+        const isActive = active === l.id;
+        return (
+          <button key={l.id} onClick={() => onChange(l.id)} style={{
+            padding: '9px 16px', border: 'none', background: 'none', cursor: 'pointer',
+            fontSize: 13, fontFamily: 'Satoshi,sans-serif',
+            fontWeight: isActive ? 700 : 500,
+            color: isActive ? isDark ? C.lime : C.teal : isDark ? 'rgba(255,255,255,0.55)' : 'rgba(2,35,34,0.5)',
+            borderBottom: isActive ?
+            `2.5px solid ${isDark ? C.lime : C.teal}` :
+            '2.5px solid transparent',
+            marginBottom: -2, transition: 'all 0.15s', whiteSpace: 'nowrap'
+          }}>{l.label}</button>);
+
+      })}
+    </div>);
+
+}
+
+function KPIStrip({ ll, cols = 4 }) {
+  const items = [
+  { label: 'Total area', value: `${ll.area.toLocaleString()} km²` },
+  { label: 'Active farms', value: `~${ll.farms}` },
+  { label: 'Avg. temp.', value: ll.tempRange },
+  { label: 'Dominant soil', value: ll.soil }];
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols},1fr)`, gap: 10 }}>
+      {items.map((k) =>
+      <div key={k.label} style={{
+        background: C.white, borderRadius: 10, padding: '12px 14px',
+        border: `1px solid ${C.mutedLight}`
+      }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: C.greenMid, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>{k.label}</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: C.teal, lineHeight: 1.2 }}>{k.value}</div>
+        </div>
+      )}
+    </div>);
+
+}
+
+function BarChart({ layer, compact = false }) {
+  const data = CHART_DATA[layer];
+  const max = Math.max(...data.bars.map((b) => b.v));
+  return (
+    <div>
+      <div style={{ fontSize: 12, fontWeight: 700, color: C.teal, marginBottom: compact ? 8 : 12, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{data.title}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: compact ? 5 : 8 }}>
+        {data.bars.map((b) =>
+        <div key={b.l} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: compact ? 64 : 82, fontSize: 11, color: C.black, opacity: 0.65, textAlign: 'right', flexShrink: 0, lineHeight: 1.2 }}>{b.l}</div>
+            <div style={{ flex: 1, background: C.mutedPale, borderRadius: 3, height: compact ? 14 : 18, overflow: 'hidden' }}>
+              <div style={{
+              width: `${b.v / max * 100}%`, height: '100%',
+              background: b.c, borderRadius: 3,
+              transition: 'width 0.45s cubic-bezier(0.4,0,0.2,1)'
+            }} />
+            </div>
+            <div style={{ width: 32, fontSize: 11, fontWeight: 700, color: C.teal, textAlign: 'right' }}>
+              {b.v}{data.unit.includes('%') ? '%' : ''}
+            </div>
+          </div>
+        )}
+      </div>
+      <div style={{ marginTop: 8, fontSize: 10, color: C.muted }}>Source: placeholder data — {data.unit}</div>
+    </div>);
+
+}
+
+function TextBlock({ title, lines = 4, height }) {
+  return (
+    <div>
+      {title && <div style={{ fontSize: 12, fontWeight: 700, color: C.teal, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>{title}</div>}
+      <div style={{
+        background: `repeating-linear-gradient(0deg, ${C.surfaceMid} 0px, ${C.surfaceMid} 1px, transparent 1px, transparent 20px)`,
+        height: height || lines * 20,
+        borderRadius: 4
+      }} />
+      <div style={{ fontSize: 10, color: C.muted, marginTop: 6, fontStyle: 'italic' }}>Narrative text placeholder — landscape context, research focus, key challenges</div>
+    </div>);
+
+}
+
+function LLBadge({ ll, size = 'md' }) {
+  const dims = size === 'sm' ? {w:28,p:5} : size === 'lg' ? {w:52,p:9} : {w:52,p:8};
+  const icon = LL_ICONS[ll.id - 1];
+  return (
+    <div style={{
+      width:dims.w, height:dims.w, borderRadius:'50%',
+      background:'#1e5238', flexShrink:0,
+      display:'flex', alignItems:'center', justifyContent:'center',
+    }}>
+      <svg width={dims.w - dims.p*2} height={dims.w - dims.p*2} viewBox={icon.vb} fill="none"
+        dangerouslySetInnerHTML={{__html: icon.paths}} />
+    </div>
+  );
+}
+
+/* ─── Layout A: Split Screen ────────────────────────────── */
+function LayoutA({ ll }) {
+  const [layer, setLayer] = useState('landuse');
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '42% 58%', height: 'calc(100vh - 108px)', overflow: 'hidden' }}>
+
+      {/* LEFT — sticky map panel */}
+      <div style={{
+        borderRight: `1.5px solid ${C.mutedLight}`,
+        background: C.white,
+        display: 'flex', flexDirection: 'column',
+        overflow: 'hidden'
+      }}>
+        <div style={{ padding: '16px 20px 8px', borderBottom: `1px solid ${C.mutedLight}` }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: C.greenMid, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 2 }}>Landscape Map</div>
+          <div style={{ fontSize: 11, color: 'rgba(2,35,34,0.45)' }}>Click layers to change map theme</div>
+        </div>
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <MapSVG layer={layer} height="100%" />
+        </div>
+        <div style={{ padding: '10px 16px 0', borderTop: `1px solid ${C.mutedLight}`, background: C.bg }}>
+          <LayerTabs active={layer} onChange={setLayer} />
+        </div>
+        <div style={{ padding: '10px 20px 14px', background: C.bg }}>
+          <MapLegend layer={layer} />
+        </div>
+      </div>
+
+      {/* RIGHT — data panel */}
+      <div style={{ overflowY: 'auto', background: C.bg }}>
+        {/* LL identity */}
+        <div style={{ padding: '20px 24px 16px', background: C.white, borderBottom: `1.5px solid ${C.mutedLight}` }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+            <LLBadge ll={ll} size="lg" />
+            <div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: C.teal, lineHeight: 1.1 }}>{ll.name}</div>
+              <div style={{ fontSize: 13, color: C.greenMid, marginTop: 4, maxWidth: 380 }}>{ll.tagline}</div>
+              <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>{ll.region}</div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+          {/* KPIs */}
+          <KPIStrip ll={ll} />
+
+          {/* Chart for active layer */}
+          <div style={{ background: C.white, borderRadius: 12, border: `1.5px solid ${C.mutedLight}`, overflow: 'hidden' }}>
+            <div style={{ padding: '14px 18px 6px', fontSize: 11, fontWeight: 700, color: C.greenMid, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              {LAYERS.find(L => L.id === layer)?.label} — distribution
+            </div>
+            <div style={{ padding: '4px 18px 18px' }}>
+              <BarChart layer={layer} />
+            </div>
+          </div>
+
+          {/* Text section */}
+          <div style={{ background: C.white, borderRadius: 12, padding: 18, border: `1.5px solid ${C.mutedLight}` }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+              <TextBlock title="About this Landscape" lines={4} />
+              <TextBlock title="Research Focus" lines={4} />
+            </div>
+          </div>
+
+          {/* Compare prompt */}
+          <div style={{
+            background: C.limePale, borderRadius: 12, padding: '14px 18px',
+            border: `1.5px dashed ${C.lime}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+          }}>
+            <div style={{ fontSize: 13, color: C.green }}>Want to compare with another Living Lab?</div>
+            <button style={{
+              padding: '7px 16px', borderRadius: 20,
+              background: C.orange, color: C.white,
+              border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer'
+            }}>+ Add for comparison</button>
+          </div>
+        </div>
+      </div>
+    </div>);
+
+}
+
+/* ─── Layout B: Stacked / Map-First ────────────────────── */
+function LayoutB({ ll }) {
+  const [layer, setLayer] = useState('landuse');
+  return (
+    <div style={{ overflowY: 'auto', height: 'calc(100vh - 108px)', background: C.bg }}>
+      {/* Header band */}
+      <div style={{
+        background: `linear-gradient(135deg, ${C.teal} 0%, ${C.tealBg} 100%)`,
+        padding: '24px 32px',
+        display: 'flex', alignItems: 'center', gap: 18
+      }}>
+        <LLBadge ll={ll} size="lg" />
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Living Lab {ll.num} · {ll.region}</div>
+          <div style={{ fontSize: 26, fontWeight: 900, color: C.white, lineHeight: 1.1 }}>{ll.name}</div>
+          <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', marginTop: 4 }}>{ll.tagline}</div>
+        </div>
+      </div>
+
+      {/* KPI strip */}
+      <div style={{ padding: '20px 32px 0' }}>
+        <KPIStrip ll={ll} />
+      </div>
+
+      {/* Map card */}
+      <div style={{ margin: '18px 32px 0', background: C.white, borderRadius: 14, border: `1.5px solid ${C.mutedLight}`, overflow: 'hidden' }}>
+        <MapSVG layer={layer} height={300} />
+        <div style={{ padding: '10px 18px 14px', borderTop: `1px solid ${C.mutedLight}`, background: C.bg }}>
+          <MapLegend layer={layer} />
+        </div>
+      </div>
+
+      {/* Layer tabs + chart */}
+      <div style={{ margin: '16px 32px 0', background: C.white, borderRadius: 14, border: `1.5px solid ${C.mutedLight}`, overflow: 'hidden' }}>
+        <div style={{ padding: '16px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <LayerTabs active={layer} onChange={setLayer} />
+          <div style={{ fontSize: 11, color: C.muted, paddingBottom: 4 }}>Thematic map changes with selected layer</div>
+        </div>
+        <div style={{ padding: '20px' }}>
+          <BarChart layer={layer} />
+        </div>
+      </div>
+
+      {/* Two-col text */}
+      <div style={{ margin: '16px 32px 0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div style={{ background: C.white, borderRadius: 14, padding: 20, border: `1.5px solid ${C.mutedLight}` }}>
+          <TextBlock title="About this Landscape" lines={5} />
+        </div>
+        <div style={{ background: C.white, borderRadius: 14, padding: 20, border: `1.5px solid ${C.mutedLight}` }}>
+          <TextBlock title="Socio-economic Context" lines={5} />
+        </div>
+      </div>
+
+      {/* Compare CTA */}
+      <div style={{ margin: '16px 32px 32px', background: C.limePale, borderRadius: 14, padding: '16px 24px', border: `2px dashed ${C.lime}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: C.green }}>Compare with another Living Lab</div>
+          <div style={{ fontSize: 12, color: C.greenMid, marginTop: 2 }}>Secondary feature — select any two LLs to view side-by-side metrics</div>
+        </div>
+        <button style={{ padding: '8px 20px', background: C.orange, color: C.white, border: 'none', borderRadius: 20, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>+ Compare</button>
+      </div>
+    </div>);
+
+}
+
+/* ─── Landing Page ──────────────────────────────────────── */
+// LL → NUTS 3 codes (see data/ll_metadata.json)
+const LL_NUTS3 = {
+  1: ['DE409', 'DE40C'],            // East Brandenburg
+  2: ['DE406'],                              // Havelländisches Luch
+  3: ['DE734', 'DE737'],                              // N. Hessian Loess Plain
+  4: ['DE721', 'DE722', 'DE723', 'DE724', 'DE725'],   // Hessian Low Mtn.
+  5: ['DE71D'],                                       // Rheingau
+};
+
+// GeoJSON → SVG path helpers
+function ringToPath(ring, project) {
+  return ring.map((pt, i) => {
+    const [x, y] = project(pt[0], pt[1]);
+    return (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1);
+  }).join(' ') + ' Z';
+}
+function featureToPath(feature, project) {
+  const g = feature.geometry;
+  if (g.type === 'Polygon') return g.coordinates.map(r => ringToPath(r, project)).join(' ');
+  if (g.type === 'MultiPolygon') return g.coordinates.map(p => p.map(r => ringToPath(r, project)).join(' ')).join(' ');
+  return '';
+}
+function walkCoords(coords, cb) {
+  if (typeof coords[0] === 'number') { cb(coords[0], coords[1]); return; }
+  for (const c of coords) walkCoords(c, cb);
+}
+function featuresBbox(features) {
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const f of features) walkCoords(f.geometry.coordinates, (x, y) => {
+    if (x < minX) minX = x; if (x > maxX) maxX = x;
+    if (y < minY) minY = y; if (y > maxY) maxY = y;
+  });
+  return { minX, maxX, minY, maxY };
+}
+function featuresCentroid(features, project) {
+  let sx = 0, sy = 0, n = 0;
+  for (const f of features) walkCoords(f.geometry.coordinates, (x, y) => {
+    const [px, py] = project(x, y); sx += px; sy += py; n++;
+  });
+  return [sx / n, sy / n];
+}
+
+function Landing({ onPick }) {
+  const [hover, setHover] = useState(null);
+  const [mapData, setMapData] = useState(null);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('./data/nuts1_de.geojson').then(r => r.json()),
+      fetch('./data/nuts3_ll_simplified.geojson').then(r => r.json()),
+    ]).then(([nuts1, nuts3]) => {
+      const SVG_W = 420, SVG_H = 560, PAD = 16;
+      const bbox = featuresBbox(nuts1.features);
+      const cosLat = Math.cos(((bbox.minY + bbox.maxY) / 2) * Math.PI / 180);
+      const pMinX = bbox.minX * cosLat;
+      const pMaxX = bbox.maxX * cosLat;
+      const pMinY = -bbox.maxY;
+      const pMaxY = -bbox.minY;
+      const dataW = pMaxX - pMinX;
+      const dataH = pMaxY - pMinY;
+      const scale = Math.min((SVG_W - 2 * PAD) / dataW, (SVG_H - 2 * PAD) / dataH);
+      const offsetX = (SVG_W - dataW * scale) / 2;
+      const offsetY = (SVG_H - dataH * scale) / 2;
+      const project = (lon, lat) => [
+        (lon * cosLat - pMinX) * scale + offsetX,
+        (-lat - pMinY) * scale + offsetY,
+      ];
+      const states = nuts1.features.map(f => ({
+        id: f.properties.NUTS_ID,
+        d: featureToPath(f, project),
+      }));
+      const llPolys = Object.entries(LL_NUTS3).map(([id, codes]) => {
+        const feats = nuts3.features.filter(f => codes.includes(f.properties.NUTS_ID));
+        const d = feats.map(f => featureToPath(f, project)).join(' ');
+        const [cx, cy] = featuresCentroid(feats, project);
+        return { id: parseInt(id, 10), d, cx, cy };
+      });
+      setMapData({ states, llPolys, viewBox: `0 0 ${SVG_W} ${SVG_H}` });
+    }).catch(err => console.error('Failed to load map data:', err));
+  }, []);
+
+  return (
+    <div style={{ height: 'calc(100vh - 60px)', display: 'flex', flexDirection: 'column', background: C.bg }}>
+      <div style={{ padding: '28px 40px 6px', maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: C.orange, textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 8 }}>Living Labs</div>
+        <h1 style={{ fontSize: 36, fontWeight: 900, color: C.teal, lineHeight: 1.05, margin: 0, maxWidth: 720 }}>Five Regions. Real-World Practice.</h1>
+        <p style={{ fontSize: 15, color: C.green, marginTop: 10, maxWidth: 680, lineHeight: 1.5 }}>
+          In five living labs, we test innovative approaches together with practitioners on the ground.
+          Pick a site on the map to explore its conditions, ambitions and progress.
+        </p>
+      </div>
+      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 24, padding: '18px 40px 40px', maxWidth: 1280, margin: '0 auto', width: '100%', minHeight: 0 }}>
+
+        {/* MAP */}
+        <div style={{ borderRadius: 18, padding: 16, position: 'relative', overflow: 'hidden' }}>
+          {mapData ? (
+            <svg viewBox={mapData.viewBox} style={{ width: '100%', height: '100%', display: 'block' }}>
+              {/* NUTS 1 — German states background */}
+              {mapData.states.map(s => (
+                <path key={s.id} d={s.d} fill={C.surfaceDark} stroke={C.white} strokeWidth="1.2" strokeLinejoin="round" />
+              ))}
+              {/* NUTS 3 — living lab polygons */}
+              {mapData.llPolys.map(llp => {
+                const ll = LLS.find(l => l.id === llp.id);
+                const icon = LL_ICONS[llp.id - 1];
+                const isHover = hover === llp.id;
+                return (
+                  <g key={llp.id}
+                    onMouseEnter={() => setHover(llp.id)}
+                    onMouseLeave={() => setHover(null)}
+                    onClick={() => onPick(ll)}
+                    style={{ cursor: 'pointer' }}>
+                    <path d={llp.d}
+                      fill={isHover ? ll.color : ll.colorDark}
+                      stroke={isHover ? C.mutedPale : 'rgba(255,255,255,0.7)'}
+                      strokeWidth={isHover ? 2.5 : 1.2}
+                      strokeLinejoin="round"
+                      style={{ transition: 'all 0.2s' }} />
+                  </g>
+                );
+              })}
+            </svg>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: C.muted, fontSize: 13 }}>Loading map…</div>
+          )}
+        </div>
+
+        {/* LIST */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto', paddingRight: 4 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.greenMid, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 2 }}>Living Labs</div>
+          {LLS.map(l => {
+            const icon = LL_ICONS[l.id - 1];
+            const isHover = hover === l.id;
+            return (
+              <div key={l.id}
+                onMouseEnter={() => setHover(l.id)}
+                onMouseLeave={() => setHover(null)}
+                onClick={() => onPick(l)}
+                style={{
+                  background: C.white, borderRadius: 14,
+                  border: `1.5px solid ${isHover ? C.green : C.mutedLight}`,
+                  padding: '14px 16px', cursor: 'pointer', transition: 'all 0.15s',
+                  display: 'flex', alignItems: 'center', gap: 14,
+                  boxShadow: isHover ? '0 4px 16px rgba(34,94,67,0.15)' : 'none',
+                  transform: isHover ? 'translateX(2px)' : 'none'
+                }}>
+                <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#1e5238', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="28" height="28" viewBox={icon.vb} fill="none" dangerouslySetInnerHTML={{__html: icon.paths}} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: C.orange, letterSpacing: '0.08em' }}>{l.region}</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: C.teal, lineHeight: 1.2, marginTop: 2 }}>{l.name}</div>
+                  <div style={{ fontSize: 12, color: C.greenMid, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.tagline}</div>
+                </div>
+                <div style={{ fontSize: 18, color: isHover ? C.orange : C.muted, transition: 'all 0.15s' }}>→</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Top-level app ─────────────────────────────────────── */
+const LAYOUT_OPTIONS = [
+{ id: 'A', label: 'Option A', sublabel: 'Split Screen', desc: 'Map fixed left · data panel scrolls right' },
+{ id: 'B', label: 'Option B', sublabel: 'Stacked', desc: 'Full-width sections · map then data below' }];
+
+
+function App() {
+  const [layout, setLayout] = useState('A');
+  const [ll, setLL] = useState(LLS[0]);
+  const [view, setView] = useState('landing'); // 'landing' | 'layout'
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+
+      {/* ── Brand top bar ── */}
+      <div style={{
+        background: 'rgb(249,254,249)',
+        padding: '10px 24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+        flexWrap: 'wrap', rowGap: 8
+      }}>
+        {/* Logo */}
+        <div onClick={() => setView('landing')} style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0, cursor: 'pointer' }}>
+          <svg width="130" height="52" viewBox="0 0 200 80" fill="none" dangerouslySetInnerHTML={{__html: `<path d="M36.327 17.321C34.0625 16.2831 31.5778 16 27.1432 16L7.61178 16.0315L4.34082 23.3911H26.6084C28.1181 23.3911 29.5964 23.4855 30.6972 24.0202C31.7979 24.5548 32.6157 25.5298 32.6157 27.008C32.6157 28.2975 31.9867 30.0588 31.106 32.0717L21.3875 53.899H30.6343L39.4092 34.179C40.9189 30.7822 41.4221 28.2975 41.4221 25.9702C41.4221 21.9443 39.8181 18.925 36.327 17.321Z" fill="#ec4518"/><path d="M57.3988 45.3757H52.3037V68.6498H67.369V63.8378H57.3988V45.3757Z" fill="#ec4518"/><path d="M182.324 16.0315V20.7492H188.615V39.3056H193.71V20.7492H200V16.0315H182.324Z" fill="#ec4518"/><path d="M10.725 60.6297C9.62414 60.095 8.80642 59.12 8.80642 57.6417C8.80642 56.3523 9.43546 54.591 10.3161 52.5781L20.0346 30.7507H10.7878L2.01288 50.4708C0.503232 53.8676 0 56.3523 0 58.6797C0 62.7054 1.60404 65.7248 5.09515 67.3288C7.35965 68.3668 9.84429 68.6498 14.279 68.6498L33.8104 68.6183L37.0813 61.2587H14.8136C13.304 61.2587 11.8258 61.1643 10.725 60.6297Z" fill="#ec4518"/><path d="M127.19 39.683C133.04 39.683 136.814 36.0976 136.814 30.5621V16.0315H131.719V30.2161C131.719 33.0782 130.084 34.7451 127.19 34.7451C124.328 34.7451 122.724 33.1411 122.724 30.2161V16.0315H117.629V30.5621C117.629 36.129 121.372 39.683 127.19 39.683Z" fill="#ec4518"/><path d="M70.0109 34.5879H58.6566L69.5391 20.5919V16.0315H52.4609V20.7492H63.0279L52.3037 34.525V39.3056H70.0109V34.5879Z" fill="#ec4518"/><path d="M77.0878 45.3757L69.2563 68.6498H74.5716L76.069 63.7434H83.9106L85.391 68.6498H90.8006L83.0006 45.3757H77.0878ZM77.3743 59.466L80.012 50.8226L82.62 59.466H77.3743Z" fill="#ec4518"/><path d="M115.679 16.0315H109.672L101.526 27.1653V16.0315H96.4307V39.3056H101.526V34.6822L105.017 30.0814L110.521 39.3056H116.465L108.333 25.7112L115.679 16.0315Z" fill="#ec4518"/><path d="M165.498 39.3056H170.593V30.8451H179.683V26.2532H170.593V20.7492H180.312V16.0315H165.498V39.3056Z" fill="#ec4518"/><path d="M126.089 45.3757H117.283V68.6498H126.404C133.04 68.6498 137.663 63.8692 137.663 57.0757C137.663 50.1563 132.914 45.3757 126.089 45.3757ZM125.9 63.9321H122.378V50.0935H125.586C129.8 50.0935 132.285 52.6725 132.285 57.0757C132.285 61.3845 129.926 63.9321 125.9 63.9321Z" fill="#ec4518"/><path d="M86.932 30.2161C86.932 33.0782 85.2965 34.7451 82.403 34.7451C79.5409 34.7451 77.9369 33.1411 77.9369 30.2161V16.0315H72.8418V30.5621C72.8418 36.129 76.5845 39.683 82.403 39.683C88.253 39.683 92.0272 36.0976 92.0272 30.5621V16.0315H86.932V30.2161Z" fill="#ec4518"/><path d="M107.69 59.8609L98.6632 45.3757H93.002V68.6498H98.0342V53.1553L107.69 68.6498H112.722V45.3757H107.69V59.8609Z" fill="#ec4518"/><path d="M155.905 30.5166L146.879 16.0315H141.217V39.3056H146.25V23.8111L155.905 39.3056H160.937V16.0315H155.905V30.5166Z" fill="#ec4518"/>`}} />
+          <div style={{ width: 1, height: 28, background: 'rgba(30,82,56,0.25)' }} />
+          <div style={{ color: 'rgb(30,82,56)', fontSize: 15, textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 900 }}>Living Lab Explorer</div>
+        </div>
+        {/* LL selector */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {LLS.map((l) => {
+            const icon = LL_ICONS[l.id - 1];
+            const active = ll.id === l.id;
+            return (
+            <button key={l.id} onClick={() => { setLL(l); setView('layout'); }} style={{
+              padding: '5px 12px 5px 6px', borderRadius: 40, cursor: 'pointer',
+              background: active ? '#34916b' : '#1e5238',
+              border: active ? '2px solid #34916b' : '2px solid #1e5238',
+              color: C.white,
+              fontSize: 12, fontWeight: active ? 800 : 500,
+              fontFamily: 'Satoshi,sans-serif', transition: 'all 0.15s', whiteSpace: 'nowrap',
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}>
+              <svg width="18" height="18" viewBox={icon.vb} fill="none" style={{flexShrink:0}} dangerouslySetInnerHTML={{__html: icon.paths}} />
+              {l.nameShort}
+            </button>);
+          })}
+        </div>
+      </div>
+
+      {/* ── Layout switcher bar ── */}
+      {view !== 'landing' && <div style={{
+        background: C.teal,
+        padding: '8px 24px',
+        display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap'
+      }}>
+        <span style={{ color: 'rgba(195,233,216,0.6)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', marginRight: 4 }}>Design option:</span>
+        {LAYOUT_OPTIONS.map((o) => {
+          const isActive = layout === o.id;
+          return (
+            <button key={o.id} onClick={() => setLayout(o.id)} style={{
+              padding: '6px 16px', borderRadius: 6, cursor: 'pointer',
+              background: isActive ? C.orange : 'transparent',
+              border: isActive ? 'none' : '1px solid rgba(131,210,175,0.35)',
+              color: isActive ? C.white : 'rgba(195,233,216,0.8)',
+              fontSize: 12, fontWeight: isActive ? 800 : 500,
+              fontFamily: 'Satoshi,sans-serif', transition: 'all 0.15s',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0
+            }}>
+              <span style={{ fontSize: 12, fontWeight: 800 }}>{o.label}</span>
+              <span style={{ fontSize: 10, opacity: 0.8, fontWeight: 500 }}>{o.sublabel}</span>
+            </button>);
+
+        })}
+        {layout &&
+        <span style={{ fontSize: 11, color: 'rgba(131,210,175,0.65)', marginLeft: 6 }}>
+            {LAYOUT_OPTIONS.find((o) => o.id === layout)?.desc}
+          </span>
+        }
+        <div style={{ marginLeft: 'auto', fontSize: 10, color: 'rgba(131,210,175,0.45)', fontStyle: 'italic' }}>
+          Wireframe prototype · placeholder data
+        </div>
+      </div>}
+
+      {/* ── Layout content ── */}
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        {view === 'landing'
+          ? <Landing onPick={(picked) => { setLL(picked); setView('layout'); }} />
+          : layout === 'A'
+            ? <LayoutA key={`A-${ll.id}`} ll={ll} />
+            : <LayoutB key={`B-${ll.id}`} ll={ll} />}
+      </div>
+
+      <style>{`
+        @keyframes bounce {
+          0%,100% { transform: translateX(-50%) translateY(0); opacity:0.45; }
+          50% { transform: translateX(-50%) translateY(5px); opacity:0.7; }
+        }
+      `}</style>
+    </div>);
+
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

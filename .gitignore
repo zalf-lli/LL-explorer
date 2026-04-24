@@ -1,0 +1,13 @@
+_site/
+.quarto/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.DS_Store
+data/_cache/
+data/croptypes_2024.tif
+
+/.quarto/
+**/*.quarto_ipynb
