@@ -1,0 +1,450 @@
+{
+  "east-brandenburg": {
+    "slug": "east-brandenburg",
+    "contact": "lab1@zalf.de",
+    "nuts3": [
+      "DE409",
+      "DE40A",
+      "DE40B",
+      "DE40C"
+    ],
+    "mock": true,
+    "en": {
+      "name": "East Brandenburg",
+      "tagline": "Multifunctional and diverse arable farming systems",
+      "soil_climate": {
+        "main_soil_types": "Mock — varies by location",
+        "topography": "Mock topography",
+        "altitude": "Mock — to be filled",
+        "rainfall": "550–800 mm/year (mock)",
+        "temperature": "8.5–10.0 °C (mock)"
+      },
+      "description": {
+        "soil": "Mock placeholder describing soil conditions for this Living Lab.",
+        "climate": "Mock placeholder describing prevailing climate patterns.",
+        "geography": "Mock placeholder describing geographic characteristics.",
+        "challenges": [
+          "Mock challenge 1",
+          "Mock challenge 2"
+        ]
+      },
+      "delineation": "Mock placeholder explaining why these NUTS3 regions were chosen.",
+      "production": {
+        "land_area": "—",
+        "agriculture_pct": "—",
+        "forests_pct": "—",
+        "grassland_pct": "—",
+        "protected_pct": "—",
+        "organic_pct": "—",
+        "main_crops": "—",
+        "main_livestock": "—",
+        "average_farm_size": "—",
+        "average_rent_rate": "—"
+      },
+      "socio": {
+        "population": "—",
+        "population_density": "—",
+        "nearest_city": "—",
+        "gdp_per_capita": "—",
+        "household_income": "—"
+      }
+    },
+    "de": {
+      "name": "Ost-Brandenburg",
+      "tagline": "Multifunktionale und vielfältige Ackerbausysteme",
+      "soil_climate": {
+        "main_soil_types": "Mock — variiert je nach Standort",
+        "topography": "Mock Topographie",
+        "altitude": "Mock — auszufüllen",
+        "rainfall": "550–800 mm/Jahr (Mock)",
+        "temperature": "8,5–10,0 °C (Mock)"
+      },
+      "description": {
+        "soil": "Mock-Platzhalter zur Beschreibung der Bodenverhältnisse.",
+        "climate": "Mock-Platzhalter zur Beschreibung des Klimas.",
+        "geography": "Mock-Platzhalter zur Beschreibung der geografischen Eigenschaften.",
+        "challenges": [
+          "Mock Herausforderung 1",
+          "Mock Herausforderung 2"
+        ]
+      },
+      "delineation": "Mock-Platzhalter zur Begründung der Auswahl der NUTS3-Regionen.",
+      "production": {
+        "land_area": "—",
+        "agriculture_pct": "—",
+        "forests_pct": "—",
+        "grassland_pct": "—",
+        "protected_pct": "—",
+        "organic_pct": "—",
+        "main_crops": "—",
+        "main_livestock": "—",
+        "average_farm_size": "—",
+        "average_rent_rate": "—"
+      },
+      "socio": {
+        "population": "—",
+        "population_density": "—",
+        "nearest_city": "—",
+        "gdp_per_capita": "—",
+        "household_income": "—"
+      }
+    }
+  },
+  "havellandisches-luch": {
+    "slug": "havellandisches-luch",
+    "contact": "lab2@zalf.de",
+    "nuts3": [
+      "DE406"
+    ],
+    "mock": true,
+    "en": {
+      "name": "Havelländisches Luch",
+      "tagline": "Climate protection and grassland use in fenland regions",
+      "soil_climate": {
+        "main_soil_types": "Mock — varies by location",
+        "topography": "Mock topography",
+        "altitude": "Mock — to be filled",
+        "rainfall": "550–800 mm/year (mock)",
+        "temperature": "8.5–10.0 °C (mock)"
+      },
+      "description": {
+        "soil": "Mock placeholder describing soil conditions for this Living Lab.",
+        "climate": "Mock placeholder describing prevailing climate patterns.",
+        "geography": "Mock placeholder describing geographic characteristics.",
+        "challenges": [
+          "Mock challenge 1",
+          "Mock challenge 2"
+        ]
+      },
+      "delineation": "Mock placeholder explaining why these NUTS3 regions were chosen.",
+      "production": {
+        "land_area": "—",
+        "agriculture_pct": "—",
+        "forests_pct": "—",
+        "grassland_pct": "—",
+        "protected_pct": "—",
+        "organic_pct": "—",
+        "main_crops": "—",
+        "main_livestock": "—",
+        "average_farm_size": "—",
+        "average_rent_rate": "—"
+      },
+      "socio": {
+        "population": "—",
+        "population_density": "—",
+        "nearest_city": "—",
+        "gdp_per_capita": "—",
+        "household_income": "—"
+      }
+    },
+    "de": {
+      "name": "Havelländisches Luch",
+      "tagline": "Klimaschutz und Grünlandnutzung in Niedermoorregionen",
+      "soil_climate": {
+        "main_soil_types": "Mock — variiert je nach Standort",
+        "topography": "Mock Topographie",
+        "altitude": "Mock — auszufüllen",
+        "rainfall": "550–800 mm/Jahr (Mock)",
+        "temperature": "8,5–10,0 °C (Mock)"
+      },
+      "description": {
+        "soil": "Mock-Platzhalter zur Beschreibung der Bodenverhältnisse.",
+        "climate": "Mock-Platzhalter zur Beschreibung des Klimas.",
+        "geography": "Mock-Platzhalter zur Beschreibung der geografischen Eigenschaften.",
+        "challenges": [
+          "Mock Herausforderung 1",
+          "Mock Herausforderung 2"
+        ]
+      },
+      "delineation": "Mock-Platzhalter zur Begründung der Auswahl der NUTS3-Regionen.",
+      "production": {
+        "land_area": "—",
+        "agriculture_pct": "—",
+        "forests_pct": "—",
+        "grassland_pct": "—",
+        "protected_pct": "—",
+        "organic_pct": "—",
+        "main_crops": "—",
+        "main_livestock": "—",
+        "average_farm_size": "—",
+        "average_rent_rate": "—"
+      },
+      "socio": {
+        "population": "—",
+        "population_density": "—",
+        "nearest_city": "—",
+        "gdp_per_capita": "—",
+        "household_income": "—"
+      }
+    }
+  },
+  "north-hessian-loess": {
+    "slug": "north-hessian-loess",
+    "contact": "lab3@zalf.de",
+    "nuts3": [
+      "DE734",
+      "DE737"
+    ],
+    "mock": true,
+    "en": {
+      "name": "North Hessian Loess Plain",
+      "tagline": "Intensified organic farming",
+      "soil_climate": {
+        "main_soil_types": "Mock — varies by location",
+        "topography": "Mock topography",
+        "altitude": "Mock — to be filled",
+        "rainfall": "550–800 mm/year (mock)",
+        "temperature": "8.5–10.0 °C (mock)"
+      },
+      "description": {
+        "soil": "Mock placeholder describing soil conditions for this Living Lab.",
+        "climate": "Mock placeholder describing prevailing climate patterns.",
+        "geography": "Mock placeholder describing geographic characteristics.",
+        "challenges": [
+          "Mock challenge 1",
+          "Mock challenge 2"
+        ]
+      },
+      "delineation": "Mock placeholder explaining why these NUTS3 regions were chosen.",
+      "production": {
+        "land_area": "—",
+        "agriculture_pct": "—",
+        "forests_pct": "—",
+        "grassland_pct": "—",
+        "protected_pct": "—",
+        "organic_pct": "—",
+        "main_crops": "—",
+        "main_livestock": "—",
+        "average_farm_size": "—",
+        "average_rent_rate": "—"
+      },
+      "socio": {
+        "population": "—",
+        "population_density": "—",
+        "nearest_city": "—",
+        "gdp_per_capita": "—",
+        "household_income": "—"
+      }
+    },
+    "de": {
+      "name": "Nordhessische Lössplatte",
+      "tagline": "Intensivierter ökologischer Landbau",
+      "soil_climate": {
+        "main_soil_types": "Mock — variiert je nach Standort",
+        "topography": "Mock Topographie",
+        "altitude": "Mock — auszufüllen",
+        "rainfall": "550–800 mm/Jahr (Mock)",
+        "temperature": "8,5–10,0 °C (Mock)"
+      },
+      "description": {
+        "soil": "Mock-Platzhalter zur Beschreibung der Bodenverhältnisse.",
+        "climate": "Mock-Platzhalter zur Beschreibung des Klimas.",
+        "geography": "Mock-Platzhalter zur Beschreibung der geografischen Eigenschaften.",
+        "challenges": [
+          "Mock Herausforderung 1",
+          "Mock Herausforderung 2"
+        ]
+      },
+      "delineation": "Mock-Platzhalter zur Begründung der Auswahl der NUTS3-Regionen.",
+      "production": {
+        "land_area": "—",
+        "agriculture_pct": "—",
+        "forests_pct": "—",
+        "grassland_pct": "—",
+        "protected_pct": "—",
+        "organic_pct": "—",
+        "main_crops": "—",
+        "main_livestock": "—",
+        "average_farm_size": "—",
+        "average_rent_rate": "—"
+      },
+      "socio": {
+        "population": "—",
+        "population_density": "—",
+        "nearest_city": "—",
+        "gdp_per_capita": "—",
+        "household_income": "—"
+      }
+    }
+  },
+  "hessian-low-mountain": {
+    "slug": "hessian-low-mountain",
+    "contact": "barbara.sprenger@zalf.de",
+    "nuts3": [
+      "DE721",
+      "DE722",
+      "DE723",
+      "DE724",
+      "DE725"
+    ],
+    "mock": false,
+    "en": {
+      "name": "Hessian Low Mountain Range",
+      "tagline": "Integrated plant-animal agricultural systems",
+      "soil_climate": {
+        "main_soil_types": "Brown earth",
+        "topography": "Low mountain",
+        "altitude": "400–1000 m",
+        "rainfall": "600–>1000 mm/year",
+        "temperature": "7.4–10.1 °C"
+      },
+      "description": {
+        "soil": "Soil types are highly variable, including podzolic brown soils with low base saturation, red sandstone, brown soils with high to medium base saturation, pseudogley, parabraun soils from loess with high base saturation, and rendzina on calcareous sites (locally limited).",
+        "climate": "Exposed to prevailing wind direction with slope rainfall and lower temperatures compared to the plains.",
+        "geography": "Low mountain regions at 400–1000 m altitude with high relief energy. Covers soil climate areas 1010 (Hesse low mountain range/Sauerland/Bergisches Land) and 1014 (Rhine-Main lowlands/Wittlicher Senke).",
+        "challenges": [
+          "Soil erosion during heavy rainfall",
+          "Marginal locations, some of which are unsuitable for cultivation"
+        ]
+      },
+      "delineation": "Based on the Giessen administrative district, with planned expansion to include all areas in Hesse with the characteristics mentioned. Covers sub-areas rather than a single contiguous region.",
+      "production": {
+        "land_area": "—",
+        "agriculture_pct": "—",
+        "forests_pct": "—",
+        "grassland_pct": "—",
+        "protected_pct": "—",
+        "organic_pct": "—",
+        "main_crops": "—",
+        "main_livestock": "—",
+        "average_farm_size": "—",
+        "average_rent_rate": "—"
+      },
+      "socio": {
+        "population": "—",
+        "population_density": "—",
+        "nearest_city": "—",
+        "gdp_per_capita": "—",
+        "household_income": "—"
+      }
+    },
+    "de": {
+      "name": "Hessisches Mittelgebirge",
+      "tagline": "Integrierte Pflanze-Tier-Agrarsysteme",
+      "soil_climate": {
+        "main_soil_types": "Braunerde",
+        "topography": "Mittelgebirge",
+        "altitude": "400–1000 m",
+        "rainfall": "600–>1000 mm/Jahr",
+        "temperature": "7,4–10,1 °C"
+      },
+      "description": {
+        "soil": "Bodentypen sind sehr variabel: podsolige Braunerden mit geringer Basensättigung, Buntsandstein, Braunerden mit hoher bis mittlerer Basensättigung, Pseudogley, Parabraunerden aus Löss mit hoher Basensättigung sowie Rendzina auf kalkhaltigen Standorten.",
+        "climate": "Exponiert zur Hauptwindrichtung mit Steigungsregen und niedrigeren Temperaturen als in den Ebenen.",
+        "geography": "Mittelgebirgsregion in 400–1000 m Höhe mit hoher Reliefenergie. Umfasst die Bodenklimaräume 1010 (Hessisches Mittelgebirge/Sauerland/Bergisches Land) und 1014 (Rhein-Main-Tiefebene/Wittlicher Senke).",
+        "challenges": [
+          "Bodenerosion bei Starkregen",
+          "Marginale Standorte, teilweise nicht ackerbaulich nutzbar"
+        ]
+      },
+      "delineation": "Ausgehend vom Regierungsbezirk Gießen, mit geplanter Erweiterung auf alle hessischen Gebiete mit den genannten Eigenschaften. Umfasst Teilflächen statt einer einzigen zusammenhängenden Region.",
+      "production": {
+        "land_area": "—",
+        "agriculture_pct": "—",
+        "forests_pct": "—",
+        "grassland_pct": "—",
+        "protected_pct": "—",
+        "organic_pct": "—",
+        "main_crops": "—",
+        "main_livestock": "—",
+        "average_farm_size": "—",
+        "average_rent_rate": "—"
+      },
+      "socio": {
+        "population": "—",
+        "population_density": "—",
+        "nearest_city": "—",
+        "gdp_per_capita": "—",
+        "household_income": "—"
+      }
+    }
+  },
+  "rheingau": {
+    "slug": "rheingau",
+    "contact": "lab5@zalf.de",
+    "nuts3": [
+      "DE71D"
+    ],
+    "mock": true,
+    "en": {
+      "name": "Rheingau",
+      "tagline": "Multifunctional and climate-resilient viticulture systems",
+      "soil_climate": {
+        "main_soil_types": "Mock — varies by location",
+        "topography": "Mock topography",
+        "altitude": "Mock — to be filled",
+        "rainfall": "550–800 mm/year (mock)",
+        "temperature": "8.5–10.0 °C (mock)"
+      },
+      "description": {
+        "soil": "Mock placeholder describing soil conditions for this Living Lab.",
+        "climate": "Mock placeholder describing prevailing climate patterns.",
+        "geography": "Mock placeholder describing geographic characteristics.",
+        "challenges": [
+          "Mock challenge 1",
+          "Mock challenge 2"
+        ]
+      },
+      "delineation": "Mock placeholder explaining why these NUTS3 regions were chosen.",
+      "production": {
+        "land_area": "—",
+        "agriculture_pct": "—",
+        "forests_pct": "—",
+        "grassland_pct": "—",
+        "protected_pct": "—",
+        "organic_pct": "—",
+        "main_crops": "—",
+        "main_livestock": "—",
+        "average_farm_size": "—",
+        "average_rent_rate": "—"
+      },
+      "socio": {
+        "population": "—",
+        "population_density": "—",
+        "nearest_city": "—",
+        "gdp_per_capita": "—",
+        "household_income": "—"
+      }
+    },
+    "de": {
+      "name": "Rheingau",
+      "tagline": "Multifunktionale und klimaresiliente Weinbausysteme",
+      "soil_climate": {
+        "main_soil_types": "Mock — variiert je nach Standort",
+        "topography": "Mock Topographie",
+        "altitude": "Mock — auszufüllen",
+        "rainfall": "550–800 mm/Jahr (Mock)",
+        "temperature": "8,5–10,0 °C (Mock)"
+      },
+      "description": {
+        "soil": "Mock-Platzhalter zur Beschreibung der Bodenverhältnisse.",
+        "climate": "Mock-Platzhalter zur Beschreibung des Klimas.",
+        "geography": "Mock-Platzhalter zur Beschreibung der geografischen Eigenschaften.",
+        "challenges": [
+          "Mock Herausforderung 1",
+          "Mock Herausforderung 2"
+        ]
+      },
+      "delineation": "Mock-Platzhalter zur Begründung der Auswahl der NUTS3-Regionen.",
+      "production": {
+        "land_area": "—",
+        "agriculture_pct": "—",
+        "forests_pct": "—",
+        "grassland_pct": "—",
+        "protected_pct": "—",
+        "organic_pct": "—",
+        "main_crops": "—",
+        "main_livestock": "—",
+        "average_farm_size": "—",
+        "average_rent_rate": "—"
+      },
+      "socio": {
+        "population": "—",
+        "population_density": "—",
+        "nearest_city": "—",
+        "gdp_per_capita": "—",
+        "household_income": "—"
+      }
+    }
+  }
+}

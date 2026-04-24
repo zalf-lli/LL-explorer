@@ -1,92 +1,216 @@
-# Living Labs Explorer — wireframe demo
+# LL Explorer
 
-Interactive Quarto site presenting **three layout alternatives** for the five
-German agricultural Living Lab dashboards. Built to demo to LL representatives
-before committing to a design.
+Bilingual React app for exploring five German agricultural Living Labs.
 
-## What's here
+The project is now based on a Vite + React app in `app/`. The old single-file wireframe has been retired. Current progress is tracked in [PROJECT-STATUS.md](./PROJECT-STATUS.md), and a plain-English explanation of how the project fits together lives in [OVERVIEW.md](./OVERVIEW.md).
 
-- **Variant A — Hub + per-LL pages** (`variant-hub/`). Landing map of all 5 LLs;
-  each LL has a dedicated page with a stable URL. Best for TYPO3 deep-links.
-- **Variant B — Adaptive single-page** (`variant-adaptive/`). Persistent map + a
-  swappable dashboard panel; supports comparing 2–5 LLs side-by-side.
-- **Variant C — Tabs / cards** (`variant-tabs/`). All 5 LLs as tabs on one page.
-  Lowest interactivity, easiest TYPO3 embed.
+## What this repo contains
 
-All three render the **same content** from `data/ll_metadata.json`. The
-[ZALF brand](brand/) (light + dark) is copied from `DMI-website/`.
+- `app/`
+  The actual web app.
+- `data/`
+  Generated data files the app uses.
+- `data-pipeline/`
+  Python and future R scripts that create or refresh data.
+- `docs/`
+  Supporting project notes and source docs.
 
-## Living Labs
+## Current state
 
-Defined in `scripts/fetch_nuts.py` (`LL_DEFINITIONS`):
+- Phase 0: Done
+- Phase 1: Done
+- Phase 2: Done
+- Phase 3: Next
 
-| Slug | Name | NUTS3 codes |
-|---|---|---|
-| east-brandenburg | East Brandenburg | DE409, DE40A, DE40B, DE40C |
-| havellandisches-luch | Havelländisches Luch | DE406, DE408 *(verify)* |
-| north-hessian-loess | North Hessian Loess Plain | DE734, DE737 |
-| hessian-low-mountain | Hessian Low Mountain Range | DE721–DE725 |
-| rheingau | Rheingau | DE71D *(verify)* |
+Right now the app includes:
 
-Only `hessian-low-mountain` has real fact-sheet content (from `ll-fields.md`).
-The other four use clearly-flagged mock content.
+- a landing page with a lightweight SVG overview map
+- Living Lab detail pages
+- two detail layout options
+- English / German language switching
+- placeholder charts
+- a placeholder LL detail map that will be replaced in Phase 3
 
-## Build & preview
+## Quick start
 
-Prerequisites:
-- [Quarto](https://quarto.org/docs/get-started/) ≥ 1.4
-- Python ≥ 3.10
+All frontend commands run inside `app/`.
 
-One-time setup:
-```bash
+### Install
+
+```powershell
+cd app
+npm install
+```
+
+### Start the dev server
+
+```powershell
+cd app
+npm run dev
+```
+
+Open the local URL shown in the terminal.
+
+### Build for production
+
+```powershell
+cd app
+npm run build
+```
+
+Production files are written to `app/dist/`.
+
+### Preview the production build locally
+
+```powershell
+cd app
+npm run preview
+```
+
+## Share For Feedback
+
+This repo is set up to publish the app with GitHub Pages through GitHub Actions.
+
+After you push to `main`:
+
+1. Open the repository on GitHub
+2. Go to `Settings` -> `Pages`
+3. Set the source to `GitHub Actions` if GitHub asks
+4. Wait for the `Deploy GitHub Pages` workflow to finish
+
+Your public preview URL should then be:
+
+- `https://<your-github-username>.github.io/LL-explorer/`
+
+That URL is the easiest version to send to non-technical reviewers for feedback.
+
+If you want to verify the production build locally before pushing:
+
+```powershell
+cd app
+npm run build
+npm run preview
+```
+
+## Everyday editing workflow
+
+For normal small changes:
+
+1. Run `npm run dev` in `app/`
+2. Open the local URL
+3. Edit a file in `app/src/`
+4. Save it
+
+The page should update automatically.
+
+When you may need to do a manual refresh or restart:
+
+- If you change files in `app/public/`, refresh the browser
+- If you change dependencies or `vite.config.js`, restart `npm run dev`
+
+## Main app structure
+
+### `app/src/`
+
+- `App.jsx`
+  Main app shell and routes
+- `main.jsx`
+  App entry point
+- `i18n.js`
+  Translation setup and language persistence
+- `theme.js`
+  Shared color tokens
+- `components/`
+  Reusable UI building blocks
+- `pages/`
+  Top-level screens such as landing and detail pages
+- `hooks/`
+  Data-loading hooks
+- `data/`
+  Frontend-side static config like icons, chart placeholders, and layer definitions
+- `lib/`
+  Small helper utilities for GeoJSON and projection logic
+- `styles/`
+  Global CSS
+
+### `app/public/`
+
+- `assets/`
+  Static brand and icon assets
+- `data/`
+  Runtime-fetched data used by the app
+
+## Data flow
+
+The frontend does not call Python or R directly.
+
+The flow is:
+
+1. Pipeline scripts write files into `data/`
+2. Needed files are copied into `app/public/data/`
+3. The React app fetches those files in the browser
+
+Important current frontend data files:
+
+- `app/public/data/ll_metadata.json`
+- `app/public/data/nuts1_de.geojson`
+- `app/public/data/nuts3_ll_simplified.geojson`
+
+## Data pipeline
+
+The current pipeline lives in `data-pipeline/`.
+
+Main script today:
+
+- `data-pipeline/python/fetch_nuts.py`
+
+That script regenerates the core metadata and GeoJSON files under `data/`.
+
+Basic usage:
+
+```powershell
+cd data-pipeline
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
-python scripts/fetch_nuts.py        # downloads NUTS, writes data/, generates per-LL pages
+python python/fetch_nuts.py
 ```
 
-Local preview:
-```bash
-quarto preview                       # opens http://localhost:4848
-```
+After pipeline output changes, copy the needed files into `app/public/data/`.
 
-Static build for deployment:
-```bash
-quarto render                        # writes _site/
-```
+## Language support
 
-## Adding / changing a Living Lab
+The app currently supports:
 
-1. Edit `LL_DEFINITIONS` in `scripts/fetch_nuts.py`.
-2. Re-run `python scripts/fetch_nuts.py` — this regenerates `data/` and the
-   per-LL pages in `variant-hub/ll/`. Variant B and C pick up new LLs
-   automatically (driven by `ll_metadata.json`).
-3. For real (non-mock) content, edit the `*_FACTSHEET_EN/DE` dicts in the script
-   and set `mock=False` for that LL by adding it to the same branch as the
-   Hessisches Mittelgebirge example.
+- English
+- German
 
-## Multi-language
+The interface text is translated through `app/src/i18n.js`. Living Lab content is read from the bilingual metadata JSON rather than being duplicated into the UI translation file.
 
-Quarto's `.lang.qmd` postfix convention:
-- `index.qmd` — English (project-wide `lang: en` default)
-- `index.de.qmd` — German
+## Routing
 
-The navbar EN/DE toggle is hard-coded in `_quarto.yml` for the wireframe; for a
-real site, swap to per-page language links if URLs need to map 1:1.
+The app uses `HashRouter`, so the main routes are:
 
-## TYPO3 deployment notes
+- `#/`
+  Landing page
+- `#/ll/:slug`
+  Living Lab detail page
 
-- `quarto render` produces a self-contained `_site/` folder. All asset paths are
-  root-relative (e.g. `/data/ll_metadata.json`) so the site assumes it's served
-  from the domain root.
-- For a sub-path deploy, add `site-url:` in `_quarto.yml` and re-render so
-  Quarto rewrites internal links — but `fetch()` calls in the inline scripts
-  still use root-relative paths and will need updating.
-- TYPO3 options: (a) copy `_site/` into `fileadmin/ll-explorer/` and link
-  directly; (b) embed individual variant pages via iframe; (c) integrate into
-  TYPO3 templates via a custom extension that includes the rendered HTML.
+This keeps deployment simpler for static hosting and TYPO3-style sub-path setups.
 
-## Out of scope (deferred)
+## Verification
 
-- Destatis GENESIS-Online API integration (mock JSON only)
-- Real KPIs / charts beyond placeholders
-- Accessibility audit, mobile polish
-- Per-LL real content for the four still-mocked LLs
+Current verified frontend commands:
+
+- `npm run lint`
+- `npm run build`
+
+## Next planned work
+
+Phase 3 will replace the placeholder detail map with a real `react-leaflet` + PMTiles map.
+
+## Related docs
+
+- [OVERVIEW.md](./OVERVIEW.md)
+- [PROJECT-STATUS.md](./PROJECT-STATUS.md)
+- [data-pipeline/README.md](./data-pipeline/README.md)

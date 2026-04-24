@@ -1,0 +1,39 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  background: #f9fef9;
+  color: #022322;
+}
+
+#root {
+  min-height: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #e5f5ee;
+}
+::-webkit-scrollbar-thumb {
+  background: #83d2af;
+  border-radius: 3px;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}

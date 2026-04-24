@@ -1,13 +1,36 @@
-_site/
-.quarto/
+# Python
 __pycache__/
 *.pyc
 .venv/
 venv/
+
+# Env / system
 .env
 .DS_Store
+
+# Data pipeline
 data/_cache/
 data/croptypes_2024.tif
+data/pmtiles/
 
+# React app (Vite)
+app/node_modules/
+app/dist/
+app/dist-ssr/
+app/.vite/
+
+# Runtime-built geodata in the app (copied/generated from /data by the pipeline)
+app/public/data/pmtiles/
+
+# Legacy Quarto artifacts (kept so old branches / local experiments stay ignored)
+_site/
+.quarto/
 /.quarto/
 **/*.quarto_ipynb
+
+# Editor / tooling
+*.log
+.vscode/*
+!.vscode/settings.json
+.idea/
+.claude/
