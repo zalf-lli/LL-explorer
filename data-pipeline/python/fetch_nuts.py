@@ -4,8 +4,9 @@ the GeoJSON + metadata JSON the wireframes consume.
 
 Run once after editing the LL_DEFINITIONS table below if NUTS codes change.
 Outputs:
-  data/nuts3_ll.geojson             (full precision)
+  data/nuts3_ll.geojson             (full precision, one feature per NUTS3)
   data/nuts3_ll_simplified.geojson  (web-friendly)
+  data/ll_boundaries.geojson        (one dissolved feature per LL)
   data/ll_metadata.json             (per-LL bilingual fact-sheet stubs)
 """
 from __future__ import annotations
@@ -15,6 +16,7 @@ from pathlib import Path
 
 import requests
 from shapely.geometry import mapping, shape
+from shapely.ops import unary_union
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
@@ -119,6 +121,37 @@ def simplify_features(features: list[dict], tolerance: float) -> list[dict]:
         sf["geometry"] = mapping(geom)
         simplified.append(sf)
     return simplified
+
+
+def dissolve_per_ll(features: list[dict]) -> list[dict]:
+    """Dissolve precise NUTS3 polygons into one feature per ll_slug."""
+    by_slug: dict[str, list] = {}
+    name_en: dict[str, str] = {}
+    name_de: dict[str, str] = {}
+    for f in features:
+        slug = f["properties"]["ll_slug"]
+        by_slug.setdefault(slug, []).append(shape(f["geometry"]))
+        name_en.setdefault(slug, f["properties"]["ll_name_en"])
+        name_de.setdefault(slug, f["properties"]["ll_name_de"])
+
+    dissolved: list[dict] = []
+    for slug in LL_DEFINITIONS:
+        geoms = by_slug.get(slug)
+        if not geoms:
+            continue
+        merged = unary_union(geoms)
+        dissolved.append(
+            {
+                "type": "Feature",
+                "properties": {
+                    "ll_slug": slug,
+                    "ll_name_en": name_en[slug],
+                    "ll_name_de": name_de[slug],
+                },
+                "geometry": mapping(merged),
+            }
+        )
+    return dissolved
 
 
 MOCK_FACTSHEET_EN = {
@@ -279,57 +312,6 @@ def build_metadata() -> dict:
     return out
 
 
-PAGE_TEMPLATE = """---
-title: "{title}"
-lang: {lang}
-format:
-  html:
-    toc: false
----
-
-<a href="../" class="back-link">{back_label}</a>
-
-<div id="ll-mini-map" class="ll-map-mini"></div>
-<div id="ll-header"></div>
-<div id="ll-kpis"></div>
-<div id="ll-content"></div>
-
-<script>
-(async () => {{
-  const slug = "{slug}";
-  const lang = "{lang}";
-  const meta = await window.LLRender.loadMeta();
-  const ll = meta[slug];
-  document.getElementById("ll-header").innerHTML = window.LLRender.renderHeader(ll, lang);
-  document.getElementById("ll-kpis").innerHTML = window.LLRender.renderKpiStrip(ll, lang);
-  document.getElementById("ll-content").innerHTML = window.LLRender.renderFactsheet(ll, lang);
-  await window.LLExplorer.makeMap("ll-mini-map", {{ lang, fitTo: slug, highlightSlug: slug }});
-}})();
-</script>
-"""
-
-
-def generate_ll_pages(meta: dict) -> None:
-    out_dir = ROOT / "variant-hub" / "ll"
-    out_dir.mkdir(parents=True, exist_ok=True)
-    written = 0
-    for slug, ll in meta.items():
-        for lang, back_label in (("en", "← Back to overview"), ("de", "← Zurück zur Übersicht")):
-            suffix = "" if lang == "en" else ".de"
-            path = out_dir / f"{slug}{suffix}.qmd"
-            path.write_text(
-                PAGE_TEMPLATE.format(
-                    title=ll[lang]["name"],
-                    lang=lang,
-                    slug=slug,
-                    back_label=back_label,
-                ),
-                encoding="utf-8",
-            )
-            written += 1
-    print(f"[ok] generated {written} per-LL pages in {out_dir.relative_to(ROOT)}")
-
-
 def main() -> None:
     gisco = fetch_gisco()
     features, missing = filter_and_tag(gisco)
@@ -345,15 +327,18 @@ def main() -> None:
     simplified = {"type": "FeatureCollection", "features": simplify_features(features, 0.005)}
     (DATA / "nuts3_ll_simplified.geojson").write_text(json.dumps(simplified), encoding="utf-8")
 
+    boundaries = {"type": "FeatureCollection", "features": dissolve_per_ll(features)}
+    (DATA / "ll_boundaries.geojson").write_text(json.dumps(boundaries), encoding="utf-8")
+
     meta = build_metadata()
     (DATA / "ll_metadata.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
 
     full_kb = (DATA / "nuts3_ll.geojson").stat().st_size / 1024
     simp_kb = (DATA / "nuts3_ll_simplified.geojson").stat().st_size / 1024
+    bnd_kb = (DATA / "ll_boundaries.geojson").stat().st_size / 1024
     print(f"[ok] wrote nuts3_ll.geojson ({full_kb:.0f} KB), nuts3_ll_simplified.geojson ({simp_kb:.0f} KB)")
+    print(f"[ok] wrote ll_boundaries.geojson ({bnd_kb:.0f} KB) with {len(boundaries['features'])} features")
     print(f"[ok] wrote ll_metadata.json")
-
-    generate_ll_pages(meta)
 
 
 if __name__ == "__main__":

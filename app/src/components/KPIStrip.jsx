@@ -1,20 +1,38 @@
 import { useTranslation } from 'react-i18next'
 import { C } from '../theme.js'
+import { KPI_ICONS } from '../data/kpi_icons.js'
+
+const KPI_DEFINITIONS = [
+  { key: 'totalArea', value: (ll) => `${ll.area.toLocaleString()} km²` },
+  { key: 'activeFarms', value: (ll) => `~${ll.farms}` },
+  { key: 'avgTemp', value: (ll) => ll.tempRange },
+  { key: 'dominantSoil', value: (ll) => ll.soil },
+]
+
+function KPIIcon({ name }) {
+  const def = KPI_ICONS[name]
+  if (!def) return null
+  return (
+    <svg
+      viewBox={def.vb}
+      width="14"
+      height="14"
+      aria-hidden="true"
+      focusable="false"
+      style={{ flexShrink: 0 }}
+      dangerouslySetInnerHTML={{ __html: def.paths }}
+    />
+  )
+}
 
 // Temporary placeholder source; Phase 4 pipeline will populate real values.
 export function KPIStrip({ ll, cols = 4 }) {
   const { t } = useTranslation()
-  const items = [
-    { label: t('kpi.totalArea'), value: `${ll.area.toLocaleString()} km²` },
-    { label: t('kpi.activeFarms'), value: `~${ll.farms}` },
-    { label: t('kpi.avgTemp'), value: ll.tempRange },
-    { label: t('kpi.dominantSoil'), value: ll.soil },
-  ]
   return (
     <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols},1fr)`, gap: 10 }}>
-      {items.map((k) => (
+      {KPI_DEFINITIONS.map((def) => (
         <div
-          key={k.label}
+          key={def.key}
           style={{
             background: C.white,
             borderRadius: 10,
@@ -30,12 +48,16 @@ export function KPIStrip({ ll, cols = 4 }) {
               textTransform: 'uppercase',
               letterSpacing: '0.07em',
               marginBottom: 4,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            {k.label}
+            <KPIIcon name={def.key} />
+            <span>{t(`kpi.${def.key}`)}</span>
           </div>
           <div style={{ fontSize: 15, fontWeight: 700, color: C.teal, lineHeight: 1.2 }}>
-            {k.value}
+            {def.value(ll)}
           </div>
         </div>
       ))}
