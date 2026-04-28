@@ -128,7 +128,11 @@ Delivered:
 - Swapped thematic raster overlays by selected tab
 - Kept unavailable tabs visible with a clean "coming soon" state
 
-### Phase 4: Extensible geodata pipeline
+### Phase 4.1: LL data ingestion
+
+Description of feature requirements: Presently the information for the LLs is entered in data-pipeline\python\fetch_nuts.py this is a throwback to when the app was just a dummy version. What is need is a concrete data input system ideally in a structured format like JSON. However, some data will be user entered i.e. taglines and descriptions etc. but some i.e. the data for the charts will be generated programmatically from the preocessing of the spatial data layers (data-pipeline\sources\sources.yaml). Hence the workflow for ingesting data during the app build needs to account for both.  
+
+### Phase 4.2: Extensible geodata pipeline
 
 Status: In progress
 
@@ -139,7 +143,14 @@ Planned:
 - Add sync step into `app/public/data/`
 - Add a one-command "refresh all layers" workflow that reads every layer declared in `data-pipeline/sources/sources.yaml`
 
-### Phase 5: Documentation
+### Phase 4.3 Chart data
+
+Description of feature requirements: for the thematic layers during data preparation add routines to prepare summary data for charts i.e. % area of each crop type. Wire this in the existing CHART.js
+
+
+### Phase 5: 
+
+### Phase 6: Documentation
 
 Status: Pending
 
@@ -149,6 +160,7 @@ Planned:
 - Document app architecture
 - Document pipeline workflow
 - Document how to add labs and layers
+
 
 ## Future pipeline feature
 

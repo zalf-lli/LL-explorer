@@ -34,3 +34,4 @@ _site/
 !.vscode/settings.json
 .idea/
 .claude/
+IMPROVEMENTS.md

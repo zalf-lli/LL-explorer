@@ -11,7 +11,7 @@ import yaml
 
 
 def repo_root() -> Path:
-    return Path(__file__).resolve().parent.parent.parent
+    return Path(__file__).absolute().parent.parent.parent
 
 
 def resolve(path: str | Path) -> Path:
