@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import math
+import shutil
+import sqlite3
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 from _sources import ensure_input_available, find_pmtiles_bin, find_rio_bin, get_layer, load_sources, repo_root, resolve
@@ -112,7 +116,7 @@ def build_paletted_geotiff(layer: dict, input_path: Path, output_tif: Path) -> t
         )
 
         rgba = np.zeros((4, dst_height, dst_width), dtype=np.uint8)
-        for value, color in build_colormap(layer, None).items():
+        for value, color in build_colormap(layer, source_nodata).items():
             mask_value = class_data == value
             if not np.any(mask_value):
                 continue
@@ -122,7 +126,8 @@ def build_paletted_geotiff(layer: dict, input_path: Path, output_tif: Path) -> t
             rgba[3][mask_value] = color[3]
 
         rgba_profile = class_profile.copy()
-        rgba_profile.update(count=4, dtype="uint8", nodata=None)
+        rgba_profile.pop("nodata", None)
+        rgba_profile.update(count=4, dtype="uint8", photometric="RGBA")
 
         with rasterio.open(output_tif, "w", **rgba_profile) as dst:
             dst.write(rgba)
@@ -136,22 +141,90 @@ def build_paletted_geotiff(layer: dict, input_path: Path, output_tif: Path) -> t
 
 
 def build_mbtiles(paletted_tif: Path, output_mbtiles: Path, min_zoom: int, max_zoom: int, tile_size: int) -> None:
+    import mercantile
+    import rasterio
+    from rasterio.enums import ColorInterp, Resampling
+    from rasterio.io import MemoryFile
+    from rasterio.warp import transform_bounds
+
+    def png_bytes(tile_data) -> bytes:
+        profile = {
+            "driver": "PNG",
+            "width": tile_size,
+            "height": tile_size,
+            "count": 4,
+            "dtype": "uint8",
+        }
+        with MemoryFile() as memfile:
+            with memfile.open(**profile) as dataset:
+                dataset.write(tile_data)
+                dataset.colorinterp = (
+                    ColorInterp.red,
+                    ColorInterp.green,
+                    ColorInterp.blue,
+                    ColorInterp.alpha,
+                )
+            return memfile.read()
+
     output_mbtiles.parent.mkdir(parents=True, exist_ok=True)
-    cmd = [
-        find_rio_bin(),
-        "mbtiles",
-        str(paletted_tif),
-        "-o",
-        str(output_mbtiles),
-        "--zoom-levels",
-        f"{min_zoom}..{max_zoom}",
-        "--tile-size",
-        str(tile_size),
-        "--format",
-        "PNG",
-    ]
-    print("[run]", " ".join(cmd))
-    subprocess.run(cmd, check=True)
+    if output_mbtiles.exists():
+        output_mbtiles.unlink()
+
+    print(f"[run] python mbtiles writer {paletted_tif} -> {output_mbtiles}")
+
+    with rasterio.open(paletted_tif) as src, sqlite3.connect(output_mbtiles) as conn:
+        west, south, east, north = transform_bounds(src.crs, "EPSG:4326", *src.bounds, densify_pts=21)
+        west = max(-180 + 1.0e-10, west)
+        south = max(-85.051129, south)
+        east = min(180 - 1.0e-10, east)
+        north = min(85.051129, north)
+
+        cur = conn.cursor()
+        cur.execute(
+            "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);"
+        )
+        cur.execute("CREATE UNIQUE INDEX idx_zcr ON tiles (zoom_level, tile_column, tile_row);")
+        cur.execute("CREATE TABLE metadata (name text, value text);")
+
+        metadata = [
+            ("name", output_mbtiles.stem),
+            ("type", "overlay"),
+            ("version", "1.1"),
+            ("description", paletted_tif.name),
+            ("format", "png"),
+            ("bounds", f"{west:.6f},{south:.6f},{east:.6f},{north:.6f}"),
+            ("minzoom", str(min_zoom)),
+            ("maxzoom", str(max_zoom)),
+        ]
+        cur.executemany("INSERT INTO metadata (name, value) VALUES (?, ?);", metadata)
+
+        total_tiles = 0
+        written_tiles = 0
+
+        for zoom in range(min_zoom, max_zoom + 1):
+            for tile in mercantile.tiles(west, south, east, north, [zoom]):
+                total_tiles += 1
+                bounds = mercantile.xy_bounds(tile)
+                window = src.window(bounds.left, bounds.bottom, bounds.right, bounds.top)
+                tile_data = src.read(
+                    out_shape=(4, tile_size, tile_size),
+                    window=window,
+                    boundless=True,
+                    fill_value=0,
+                    resampling=Resampling.nearest,
+                )
+                if tile_data.shape[0] < 4 or not tile_data[3].any():
+                    continue
+
+                tile_row = int(math.pow(2, zoom)) - tile.y - 1
+                cur.execute(
+                    "INSERT INTO tiles (zoom_level, tile_column, tile_row, tile_data) VALUES (?, ?, ?, ?);",
+                    (zoom, tile.x, tile_row, sqlite3.Binary(png_bytes(tile_data))),
+                )
+                written_tiles += 1
+
+        conn.commit()
+        print(f"[ok] wrote {written_tiles}/{total_tiles} tiles to {output_mbtiles.name}")
 
 
 def convert_pmtiles(output_mbtiles: Path, output_pmtiles: Path) -> None:
@@ -159,6 +232,22 @@ def convert_pmtiles(output_mbtiles: Path, output_pmtiles: Path) -> None:
     cmd = [find_pmtiles_bin(), "convert", str(output_mbtiles), str(output_pmtiles)]
     print("[run]", " ".join(cmd))
     subprocess.run(cmd, check=True)
+
+
+def cleanup_temp_dir(path: Path, attempts: int = 6, delay_s: float = 0.5) -> None:
+    last_error: Exception | None = None
+    for attempt in range(1, attempts + 1):
+        try:
+            shutil.rmtree(path)
+            return
+        except PermissionError as exc:
+            last_error = exc
+            if attempt < attempts:
+                time.sleep(delay_s)
+                continue
+            break
+    if last_error is not None:
+        print(f"[warn] could not remove temp dir {path}: {last_error}")
 
 
 def list_layers() -> None:
@@ -180,14 +269,16 @@ def build_layer(layer_id: str) -> None:
     cache_root = repo_root() / "data" / "_cache"
     cache_root.mkdir(parents=True, exist_ok=True)
 
-    with tempfile.TemporaryDirectory(prefix=f"{layer_id}-", dir=cache_root) as temp_dir:
-        temp_dir_path = Path(temp_dir)
+    temp_dir_path = Path(tempfile.mkdtemp(prefix=f"{layer_id}-", dir=cache_root))
+    try:
         paletted_tif = temp_dir_path / f"{layer_id}.tif"
         temp_mbtiles = temp_dir_path / f"{layer_id}.mbtiles"
 
         bounds = build_paletted_geotiff(layer, input_path, paletted_tif)
         build_mbtiles(paletted_tif, temp_mbtiles, min_zoom, max_zoom, tile_size)
         convert_pmtiles(temp_mbtiles, output_pmtiles)
+    finally:
+        cleanup_temp_dir(temp_dir_path)
 
     size_mb = output_pmtiles.stat().st_size / 1024 / 1024
     print(f"[ok] wrote {output_pmtiles.relative_to(repo_root())} ({size_mb:.1f} MB)")
