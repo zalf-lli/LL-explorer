@@ -153,30 +153,16 @@ function LayoutSplit({ ll }) {
           overflow: 'hidden',
         }}
       >
-        <div style={{ padding: '16px 20px 8px', borderBottom: `1px solid ${C.mutedLight}` }}>
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              color: C.greenMid,
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: 2,
-            }}
-          >
-            {t('llDetail.landscapeMap')}
-          </div>
-          <div style={{ fontSize: 11, color: 'rgba(2,35,34,0.45)' }}>
-            {t('llDetail.landscapeMapHint')}
+        <div style={{ padding: '10px 16px 6px', background: C.bg, borderBottom: `1px solid ${C.mutedLight}` }}>
+          <LayerTabs active={layer} onChange={setLayer} />
+          <div style={{ fontSize: 11, color: 'rgba(2,35,34,0.55)', marginTop: 6 }}>
+            {t('llDetail.layerTabsHint')}
           </div>
         </div>
         <div style={{ flex: 1, minHeight: 0 }}>
           <Suspense fallback={<MapFallback />}>
             <LLMap ll={ll} layer={layer} height="100%" />
           </Suspense>
-        </div>
-        <div style={{ padding: '10px 16px 0', borderTop: `1px solid ${C.mutedLight}`, background: C.bg }}>
-          <LayerTabs active={layer} onChange={setLayer} />
         </div>
       </div>
 
@@ -301,6 +287,12 @@ function LayoutStacked({ ll }) {
           overflow: 'hidden',
         }}
       >
+        <div style={{ padding: '12px 20px 6px', background: C.bg, borderBottom: `1px solid ${C.mutedLight}` }}>
+          <LayerTabs active={layer} onChange={setLayer} />
+          <div style={{ fontSize: 11, color: 'rgba(2,35,34,0.55)', marginTop: 6 }}>
+            {t('llDetail.layerTabsHint')}
+          </div>
+        </div>
         <Suspense fallback={<MapFallback />}>
           <LLMap ll={ll} layer={layer} height={300} />
         </Suspense>
@@ -315,19 +307,6 @@ function LayoutStacked({ ll }) {
           overflow: 'hidden',
         }}
       >
-        <div
-          style={{
-            padding: '16px 20px 0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <LayerTabs active={layer} onChange={setLayer} />
-          <div style={{ fontSize: 11, color: C.muted, paddingBottom: 4 }}>
-            {t('llDetail.thematicMapHint')}
-          </div>
-        </div>
         <div style={{ padding: 20 }}>
           <BarChart layer={layer} />
         </div>

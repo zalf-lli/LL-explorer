@@ -12,6 +12,7 @@ STATIC_DATA_FILES = [
     "data/nuts1_de.geojson",
     "data/nuts3_ll.geojson",
     "data/nuts3_ll_simplified.geojson",
+    "data/ll_boundaries.geojson",
 ]
 
 
@@ -43,6 +44,44 @@ def generate_landuse_legend() -> None:
     print(f"[sync] generated {target.relative_to(repo_root())}")
 
 
+def generate_layer_sources() -> None:
+    """Emit per-layer provenance metadata for the in-app info control."""
+    sources = load_sources()
+    entries = []
+    for layer in sources.get("layers", []):
+        app_layer = layer.get("app_layer")
+        if not app_layer:
+            continue
+        src = layer.get("source", {}) or {}
+        title = layer.get("title", {}) or {}
+        description = layer.get("description", {}) or {}
+        entries.append(
+            {
+                "id": layer.get("id"),
+                "appLayer": app_layer,
+                "title": {"en": title.get("en", ""), "de": title.get("de", "")},
+                "description": {"en": description.get("en", ""), "de": description.get("de", "")},
+                "provider": src.get("provider", ""),
+                "dataset": src.get("dataset", ""),
+                "url": src.get("url", ""),
+                "license": src.get("license", ""),
+                "attribution": src.get("attribution", ""),
+                "citation": src.get("citation", ""),
+            }
+        )
+
+    target = resolve("app/src/data/layer_sources.js")
+    body = (
+        "// Generated from data-pipeline/sources/sources.yaml.\n"
+        "// Do not edit by hand; run `python data-pipeline/sync.py` after changing sources.yaml.\n"
+        f"export const LAYER_SOURCES = {json.dumps(entries, indent=2, ensure_ascii=False)}\n\n"
+        "export const LAYER_SOURCE_INDEX = new Map(LAYER_SOURCES.map((s) => [s.appLayer, s]))\n"
+    )
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(body, encoding="utf-8")
+    print(f"[sync] generated {target.relative_to(repo_root())}")
+
+
 def sync_pmtiles() -> None:
     sources = load_sources()
     for layer in sources["layers"]:
@@ -64,6 +103,7 @@ def sync_to_app() -> None:
         sync_file(source, resolve(f"app/public/{rel_path}"))
     sync_pmtiles()
     generate_landuse_legend()
+    generate_layer_sources()
 
 
 if __name__ == "__main__":
