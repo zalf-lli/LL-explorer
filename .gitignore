@@ -11,7 +11,8 @@ venv/
 # Data pipeline
 data/_cache/
 data/croptypes_2024.tif
-data/pmtiles/
+data/boart1000_ob_v20
+data/pmtiles/*.tmp
 
 # React app (Vite)
 app/node_modules/
@@ -20,7 +21,6 @@ app/dist-ssr/
 app/.vite/
 
 # Runtime-built geodata in the app (copied/generated from /data by the pipeline)
-app/public/data/pmtiles/
 
 # Legacy Quarto artifacts (kept so old branches / local experiments stay ignored)
 _site/

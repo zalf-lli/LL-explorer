@@ -16,7 +16,7 @@ from pathlib import Path
 import requests
 from shapely.geometry import mapping, shape
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 DATA = ROOT / "data"
 DATA.mkdir(exist_ok=True)
 

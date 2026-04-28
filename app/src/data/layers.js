@@ -1,12 +1,18 @@
-// Thematic map layers. Colours and legend labels will eventually come from
-// the geodata pipeline registry (sources.yaml); for now they match the wireframe.
+import { LANDUSE_LEGEND } from './landuse_legend.js'
 
 export const LAYERS = [
-  { id: 'landuse' },
-  { id: 'climate' },
-  { id: 'soil' },
-  { id: 'economic' },
+  {
+    id: 'landuse',
+    pmtilesUrl: 'data/pmtiles/landuse-croptypes.pmtiles',
+    legend: LANDUSE_LEGEND,
+    available: true,
+  },
+  { id: 'climate', pmtilesUrl: null, legend: null, available: false },
+  { id: 'soil', pmtilesUrl: null, legend: null, available: false },
+  { id: 'economic', pmtilesUrl: null, legend: null, available: false },
 ]
+
+export const LAYER_INDEX = new Map(LAYERS.map((layer) => [layer.id, layer]))
 
 export const LAYER_COLORS = {
   landuse: { arable: '#c2e077', forest: '#276d4e', grassland: '#83d2af', settlement: '#b5ad9e', water: '#8ffffc' },
