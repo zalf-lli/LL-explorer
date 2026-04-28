@@ -7,11 +7,34 @@ This file is a condensed, updated copy of the original implementation plan you p
 - Phase 0: Complete
 - Phase 1: Complete
 - Phase 2: Complete
-- Phase 3: Not started
-- Phase 4: Not started
+- Phase 3: Complete
+- Phase 4: In progress
 - Phase 5: Not started
 
-Work is paused here by request before Phase 3.
+Work is active on the completed Phase 3 map plus the crop-types slice of Phase 4.
+
+## Current implementation checklist
+
+- [x] Convert the approved Phase 3 + crop-types plan into a live progress checklist in this file
+- [x] Add `sources.yaml` and source-registry docs for the crop-types layer
+- [x] Add pipeline helpers for loading sources, resolving repo paths, and locating `pmtiles`
+- [x] Add `build_pmtiles.py` for clipping, reprojection, palette handling, MBTiles generation, and PMTiles conversion
+- [x] Add `sync.py` to copy pipeline outputs into `app/public/data/` and generate `landuse_legend.js`
+- [x] Update pipeline requirements, README instructions, `.gitignore`, and the latent repo-root path bug in `fetch_nuts.py`
+- [x] Wire app data files: `landuse_legend.js`, `layers.js`, `main.jsx`, and LL detail prop updates
+- [x] Update `MapLegend.jsx` to render generated land-use legend entries with language-aware labels
+- [x] Replace the placeholder `LLMap` with a real `react-leaflet` + PMTiles map and stub unavailable tabs cleanly
+- [x] Install the new frontend dependencies and refresh `package-lock.json`
+- [x] Run verification (`npm run lint`, `npm run build`, and targeted Python checks) and record results here
+- [ ] Add a one-command pipeline task to build or refresh all layer outputs declared in `data-pipeline/sources/sources.yaml`
+
+### Verification notes
+
+- `npm run lint`: passes
+- `npm run build`: passes; Leaflet/PMTiles code lands in a separate `LLMap-*.js` chunk
+- `python data-pipeline/sync.py`: passes; syncs GeoJSON files into `app/public/data/` and regenerates `app/src/data/landuse_legend.js`
+- `python data-pipeline/python/build_pmtiles.py --list`: passes
+- `python data-pipeline/python/build_pmtiles.py --layer landuse-croptypes`: passes in the configured Windows pipeline environment; writes `data/pmtiles/landuse-croptypes.pmtiles` at about 22.7 MB
 
 ## What has been done
 
@@ -58,6 +81,10 @@ Work is paused here by request before Phase 3.
 - `app/vite.config.js` was adjusted so builds work correctly from the linked workspace path `C:\git\LL-explorer`.
 - `npm run lint` passes.
 - `npm run build` passes.
+- The first real thematic raster layer now builds end to end and syncs into the app:
+  - `data/pmtiles/landuse-croptypes.pmtiles`
+  - `app/public/data/pmtiles/landuse-croptypes.pmtiles`
+- The Windows pipeline setup is now documented in `data-pipeline/README.md`, including the working Python 3.12 and `pmtiles.exe` flow.
 
 ## Updated phase plan
 
@@ -91,24 +118,26 @@ Delivered:
 
 ### Phase 3: Real map with react-leaflet + PMTiles
 
-Status: Next
+Status: Done
 
-Planned next work:
+Delivered:
 
-- Install `react-leaflet`, `leaflet`, `pmtiles`, `protomaps-leaflet`
-- Replace the placeholder LL detail map with a real Leaflet map
-- Fit map bounds to the selected Living Lab
-- Swap raster/vector thematic layers by selected tab
+- Installed `react-leaflet`, `leaflet`, and `pmtiles`
+- Replaced the placeholder LL detail map with a real Leaflet map
+- Fit map bounds to the selected Living Lab geometry
+- Swapped thematic raster overlays by selected tab
+- Kept unavailable tabs visible with a clean "coming soon" state
 
 ### Phase 4: Extensible geodata pipeline
 
-Status: Pending
+Status: In progress
 
 Planned:
 
 - Split pipeline responsibilities more clearly
 - Add PMTiles build flow
 - Add sync step into `app/public/data/`
+- Add a one-command "refresh all layers" workflow that reads every layer declared in `data-pipeline/sources/sources.yaml`
 
 ### Phase 5: Documentation
 
@@ -120,6 +149,28 @@ Planned:
 - Document app architecture
 - Document pipeline workflow
 - Document how to add labs and layers
+
+## Future pipeline feature
+
+Requested next convenience feature:
+
+- Add a script or command that prepares all spatial layers declared in `data-pipeline/sources/sources.yaml`
+- Goal: one command to refresh all layer outputs instead of building each layer manually
+
+Likely shape:
+
+- `python data-pipeline/python/build_pmtiles.py --all`
+
+or
+
+- `python data-pipeline/python/build_all_layers.py`
+
+Expected behavior:
+
+- iterate through every layer in `sources.yaml`
+- build each layer in sequence
+- report successes and failures clearly
+- optionally run `python sync.py` at the end
 
 ### Phase 3 — Real map (react-leaflet + PMTiles)
 - Install `react-leaflet`, `leaflet`, `protomaps-leaflet`, `pmtiles`

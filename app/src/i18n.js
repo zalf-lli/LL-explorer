@@ -135,6 +135,8 @@ const resources = {
       map: {
         loadError: 'Failed to load map data. Check the browser console.',
         placeholder: 'Interactive map (Leaflet + PMTiles) lands in Phase 3',
+        layerComingSoon: 'Layer coming soon',
+        dataUnavailable: 'Data for this tab is not available yet.',
       },
       llDetail: {
         loading: 'Loading Living Lab...',
@@ -279,6 +281,8 @@ const resources = {
       map: {
         loadError: 'Kartendaten konnten nicht geladen werden. Bitte Browser-Konsole prüfen.',
         placeholder: 'Interaktive Karte (Leaflet + PMTiles) folgt in Phase 3',
+        layerComingSoon: 'Ebene folgt in Kuerze',
+        dataUnavailable: 'Daten fuer diese Ebene sind noch nicht verfuegbar.',
       },
       llDetail: {
         loading: 'Living Lab wird geladen...',

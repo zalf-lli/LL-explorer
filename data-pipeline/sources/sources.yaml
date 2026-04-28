@@ -1,0 +1,69 @@
+version: 1
+
+defaults:
+  target_crs: "EPSG:3857"
+  tile_size: 512
+  resampling: nearest
+  clip_buffer_m: 2000
+  clip_to: data/nuts3_ll.geojson
+  min_zoom: 6
+  max_zoom: 12
+
+layers:
+  - id: landuse-croptypes
+    app_layer: landuse
+    kind: raster
+    classification: categorical
+    title:
+      en: "Crop types (DLR, 2024)"
+      de: "Anbaukulturen (DLR, 2024)"
+    description:
+      en: "Annual 10 m crop-type map for Germany derived from Sentinel-1/2 and LPIS with Random Forest."
+      de: "Jaehrliche 10-m-Anbaukulturkarte fuer Deutschland aus Sentinel-1/2 und LPIS mit Random Forest."
+    source:
+      provider: "German Aerospace Center (DLR)"
+      dataset: "CROPTYPES_DE_P1Y (2024 edition)"
+      url: "https://geoservice.dlr.de/web/datasets/croptypes_de"
+      stac: "https://geoservice.dlr.de/eoc/ogc/stac/v1/collections/CROPTYPES_DE_P1Y"
+      download_index: "https://download.geoservice.dlr.de/CROPTYPES/files/"
+      license: "CC-BY-4.0"
+      attribution: "(c) DLR (2024), CC BY 4.0"
+      citation: "Asam et al. 2022"
+    input:
+      path: data/croptypes_2024.tif
+      download_url: "https://download.geoservice.dlr.de/CROPTYPES/files/croptypes_2024.tif"
+      sha256: null
+      crs: "EPSG:4326"
+      resolution_m: 10
+      nodata: 0
+    build:
+      script: python/build_pmtiles.py
+      target_crs: "EPSG:3857"
+      min_zoom: 6
+      max_zoom: 12
+      tile_size: 512
+      resampling: nearest
+    output:
+      pmtiles: data/pmtiles/landuse-croptypes.pmtiles
+      sync_to: app/public/data/pmtiles/landuse-croptypes.pmtiles
+    legend:
+      - { value: 0, label: { en: "no data", de: "no data" }, color: "#cccccc" }
+      - { value: 11, label: { en: "winter wheat", de: "Winterweizen" }, color: "#c2e077" }
+      - { value: 12, label: { en: "winter barley", de: "Wintergerste" }, color: "#9bc72d" }
+      - { value: 13, label: { en: "winter rye", de: "Winterroggen" }, color: "#5ec597" }
+      - { value: 14, label: { en: "other winter cereals", de: "Sonstiges Wintergetreide" }, color: "#359269" }
+      - { value: 21, label: { en: "spring wheat", de: "Sommerweizen" }, color: "#225e43" }
+      - { value: 22, label: { en: "spring barley", de: "Sommergerste" }, color: "#00b3ad" }
+      - { value: 23, label: { en: "spring oat", de: "Sommerhafer" }, color: "#008581" }
+      - { value: 30, label: { en: "maize", de: "Mais" }, color: "#005754" }
+      - { value: 40, label: { en: "legumes", de: "Bohnen/Lupinen/Erbsen" }, color: "#eb5b25" }
+      - { value: 50, label: { en: "potato", de: "Kartoffeln" }, color: "#dc4b14" }
+      - { value: 60, label: { en: "sugar beet", de: "Zuckerrueben" }, color: "#bb3f11" }
+      - { value: 71, label: { en: "rapeseed", de: "Raps" }, color: "#fce3da" }
+      - { value: 81, label: { en: "clover/alfalfa", de: "Klee/Luzerne" }, color: "#83d2af" }
+      - { value: 82, label: { en: "arable grass", de: "Ackergras" }, color: "#c3e9d8" }
+      - { value: 83, label: { en: "permanent grassland", de: "Gruenland" }, color: "#bce9d2" }
+      - { value: 90, label: { en: "vineyard", de: "Wein" }, color: "#e5f5ee" }
+      - { value: 100, label: { en: "fruit trees and other woody vegetation", de: "Obst- und Feldgehoelz" }, color: "#8ffffc" }
+      - { value: 110, label: { en: "hops", de: "Hopfen" }, color: "#66d1ff" }
+      - { value: 111, label: { en: "other agricultural use", de: "Sonstige landwirtschaftliche Nutzung" }, color: "#3da5d9" }

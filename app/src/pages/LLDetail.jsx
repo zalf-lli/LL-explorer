@@ -172,7 +172,7 @@ function LayoutSplit({ ll }) {
         </div>
         <div style={{ flex: 1, minHeight: 0 }}>
           <Suspense fallback={<MapFallback />}>
-            <LLMap slug={ll.slug} layer={layer} height="100%" />
+            <LLMap ll={ll} layer={layer} height="100%" />
           </Suspense>
         </div>
         <div style={{ padding: '10px 16px 0', borderTop: `1px solid ${C.mutedLight}`, background: C.bg }}>
@@ -302,7 +302,7 @@ function LayoutStacked({ ll }) {
         }}
       >
         <Suspense fallback={<MapFallback />}>
-          <LLMap slug={ll.slug} layer={layer} height={300} />
+          <LLMap ll={ll} layer={layer} height={300} />
         </Suspense>
       </div>
 
