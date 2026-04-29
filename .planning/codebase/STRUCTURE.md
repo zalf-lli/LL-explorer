@@ -87,6 +87,7 @@ LL-explorer/
 - Contains: layer registry (`sources/`), processing scripts (`python/`), and the sync/copy orchestrator (`sync.py`).
 - Key files: `data-pipeline/sync.py`, `data-pipeline/python/fetch_nuts.py`, `data-pipeline/python/build_pmtiles.py`.
 
+
 **`data-pipeline/sources/`:**
 - Purpose: Declarative registry of layer inputs/outputs used for codegen and PMTiles builds.
 - Contains: `sources.yaml`.
