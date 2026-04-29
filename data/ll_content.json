@@ -2,19 +2,11 @@
   "east-brandenburg": {
     "slug": "east-brandenburg",
     "contact": "lab1@zalf.de",
-    "nuts3": [
-      "DE409",
-      "DE40A",
-      "DE40B",
-      "DE40C"
-    ],
+    "nuts3": ["DE409", "DE40A", "DE40B", "DE40C"],
     "mock": true,
     "num": "01",
     "order": 1,
-    "region": {
-      "en": "Brandenburg",
-      "de": "Brandenburg"
-    },
+    "region": { "en": "Brandenburg", "de": "Brandenburg" },
     "color": "#9bc72d",
     "colorDark": "#5e781b",
     "outlineColor": "#eb5b25",
@@ -40,10 +32,7 @@
         "soil": "Mock placeholder describing soil conditions for this Living Lab.",
         "climate": "Mock placeholder describing prevailing climate patterns.",
         "geography": "Mock placeholder describing geographic characteristics.",
-        "challenges": [
-          "Mock challenge 1",
-          "Mock challenge 2"
-        ]
+        "challenges": ["Mock challenge 1", "Mock challenge 2"]
       },
       "delineation": "Mock placeholder explaining why these NUTS3 regions were chosen.",
       "production": {
@@ -80,10 +69,7 @@
         "soil": "Mock-Platzhalter zur Beschreibung der Bodenverhaeltnisse.",
         "climate": "Mock-Platzhalter zur Beschreibung des Klimas.",
         "geography": "Mock-Platzhalter zur Beschreibung der geografischen Eigenschaften.",
-        "challenges": [
-          "Mock Herausforderung 1",
-          "Mock Herausforderung 2"
-        ]
+        "challenges": ["Mock Herausforderung 1", "Mock Herausforderung 2"]
       },
       "delineation": "Mock-Platzhalter zur Begruendung der Auswahl der NUTS3-Regionen.",
       "production": {
@@ -110,17 +96,11 @@
   "havellandisches-luch": {
     "slug": "havellandisches-luch",
     "contact": "lab2@zalf.de",
-    "nuts3": [
-      "DE406",
-      "DE408"
-    ],
+    "nuts3": ["DE406", "DE408"],
     "mock": true,
     "num": "02",
     "order": 2,
-    "region": {
-      "en": "Brandenburg",
-      "de": "Brandenburg"
-    },
+    "region": { "en": "Brandenburg", "de": "Brandenburg" },
     "color": "#00b3ad",
     "colorDark": "#005754",
     "outlineColor": "#00b3ad",
@@ -146,10 +126,7 @@
         "soil": "Mock placeholder describing soil conditions for this Living Lab.",
         "climate": "Mock placeholder describing prevailing climate patterns.",
         "geography": "Mock placeholder describing geographic characteristics.",
-        "challenges": [
-          "Mock challenge 1",
-          "Mock challenge 2"
-        ]
+        "challenges": ["Mock challenge 1", "Mock challenge 2"]
       },
       "delineation": "Mock placeholder explaining why these NUTS3 regions were chosen.",
       "production": {
@@ -186,10 +163,7 @@
         "soil": "Mock-Platzhalter zur Beschreibung der Bodenverhaeltnisse.",
         "climate": "Mock-Platzhalter zur Beschreibung des Klimas.",
         "geography": "Mock-Platzhalter zur Beschreibung der geografischen Eigenschaften.",
-        "challenges": [
-          "Mock Herausforderung 1",
-          "Mock Herausforderung 2"
-        ]
+        "challenges": ["Mock Herausforderung 1", "Mock Herausforderung 2"]
       },
       "delineation": "Mock-Platzhalter zur Begruendung der Auswahl der NUTS3-Regionen.",
       "production": {
@@ -216,17 +190,11 @@
   "north-hessian-loess": {
     "slug": "north-hessian-loess",
     "contact": "lab3@zalf.de",
-    "nuts3": [
-      "DE734",
-      "DE737"
-    ],
+    "nuts3": ["DE734", "DE737"],
     "mock": true,
     "num": "03",
     "order": 3,
-    "region": {
-      "en": "Hesse",
-      "de": "Hessen"
-    },
+    "region": { "en": "Hesse", "de": "Hessen" },
     "color": "#008581",
     "colorDark": "#00413f",
     "outlineColor": "#359269",
@@ -252,10 +220,7 @@
         "soil": "Mock placeholder describing soil conditions for this Living Lab.",
         "climate": "Mock placeholder describing prevailing climate patterns.",
         "geography": "Mock placeholder describing geographic characteristics.",
-        "challenges": [
-          "Mock challenge 1",
-          "Mock challenge 2"
-        ]
+        "challenges": ["Mock challenge 1", "Mock challenge 2"]
       },
       "delineation": "Mock placeholder explaining why these NUTS3 regions were chosen.",
       "production": {
@@ -292,10 +257,7 @@
         "soil": "Mock-Platzhalter zur Beschreibung der Bodenverhaeltnisse.",
         "climate": "Mock-Platzhalter zur Beschreibung des Klimas.",
         "geography": "Mock-Platzhalter zur Beschreibung der geografischen Eigenschaften.",
-        "challenges": [
-          "Mock Herausforderung 1",
-          "Mock Herausforderung 2"
-        ]
+        "challenges": ["Mock Herausforderung 1", "Mock Herausforderung 2"]
       },
       "delineation": "Mock-Platzhalter zur Begruendung der Auswahl der NUTS3-Regionen.",
       "production": {
@@ -322,20 +284,11 @@
   "hessian-low-mountain": {
     "slug": "hessian-low-mountain",
     "contact": "barbara.sprenger@zalf.de",
-    "nuts3": [
-      "DE721",
-      "DE722",
-      "DE723",
-      "DE724",
-      "DE725"
-    ],
+    "nuts3": ["DE721", "DE722", "DE723", "DE724", "DE725"],
     "mock": false,
     "num": "04",
     "order": 4,
-    "region": {
-      "en": "Hesse",
-      "de": "Hessen"
-    },
+    "region": { "en": "Hesse", "de": "Hessen" },
     "color": "#5ec597",
     "colorDark": "#276d4e",
     "outlineColor": "#9bc72d",
@@ -431,16 +384,11 @@
   "rheingau": {
     "slug": "rheingau",
     "contact": "lab5@zalf.de",
-    "nuts3": [
-      "DE71D"
-    ],
+    "nuts3": ["DE71D"],
     "mock": true,
     "num": "05",
     "order": 5,
-    "region": {
-      "en": "Hesse",
-      "de": "Hessen"
-    },
+    "region": { "en": "Hesse", "de": "Hessen" },
     "color": "#359269",
     "colorDark": "#225e43",
     "outlineColor": "#dc4b14",
@@ -466,10 +414,7 @@
         "soil": "Mock placeholder describing soil conditions for this Living Lab.",
         "climate": "Mock placeholder describing prevailing climate patterns.",
         "geography": "Mock placeholder describing geographic characteristics.",
-        "challenges": [
-          "Mock challenge 1",
-          "Mock challenge 2"
-        ]
+        "challenges": ["Mock challenge 1", "Mock challenge 2"]
       },
       "delineation": "Mock placeholder explaining why these NUTS3 regions were chosen.",
       "production": {
@@ -506,10 +451,7 @@
         "soil": "Mock-Platzhalter zur Beschreibung der Bodenverhaeltnisse.",
         "climate": "Mock-Platzhalter zur Beschreibung des Klimas.",
         "geography": "Mock-Platzhalter zur Beschreibung der geografischen Eigenschaften.",
-        "challenges": [
-          "Mock Herausforderung 1",
-          "Mock Herausforderung 2"
-        ]
+        "challenges": ["Mock Herausforderung 1", "Mock Herausforderung 2"]
       },
       "delineation": "Mock-Platzhalter zur Begruendung der Auswahl der NUTS3-Regionen.",
       "production": {

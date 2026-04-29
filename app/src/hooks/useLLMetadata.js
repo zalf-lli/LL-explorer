@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { LL_DISPLAY, LL_ORDER, LL_REGION } from '../data/ll_display.js'
 
 // Fetched once per page load and cached in module scope. The file is small (~16 KB).
 let cache = null
@@ -23,17 +22,23 @@ function fetchMetadata() {
   return inflight
 }
 
-// Merge JSON metadata + display config for a single language.
-function buildLL(slug, raw, lang) {
-  const display = LL_DISPLAY[slug]
-  const content = raw[lang] || raw.en
+function buildLL(raw, lang) {
+  const content = raw[lang] || raw.en || {}
+  const kpi = raw.kpi || {}
   return {
-    slug,
-    num: display.num,
-    region: LL_REGION[slug]?.[lang] || LL_REGION[slug]?.en || '',
-    color: display.color,
-    colorDark: display.colorDark,
-    ...display.kpi,
+    slug: raw.slug,
+    num: raw.num || '',
+    order: raw.order || Number.MAX_SAFE_INTEGER,
+    region: raw.region?.[lang] || raw.region?.en || '',
+    color: raw.color || '#9bc72d',
+    colorDark: raw.colorDark || raw.color || '#5e781b',
+    outlineColor: raw.outlineColor || '#eb5b25',
+    icon: raw.icon || raw.slug,
+    area: kpi.area ?? 0,
+    farms: kpi.farms ?? 0,
+    tempRange: kpi.tempRange ?? '',
+    precip: kpi.precip ?? '',
+    soil: kpi.soil ?? '',
     name: content.name,
     tagline: content.tagline,
     nuts3: raw.nuts3,
@@ -43,7 +48,7 @@ function buildLL(slug, raw, lang) {
   }
 }
 
-// Returns { lls, bySlug, loading, error } — a list in display order plus a slug index.
+// Returns { lls, bySlug, loading, error } - a list in display order plus a slug index.
 export function useLLMetadata(lang = 'en') {
   const [state, setState] = useState({ lls: null, bySlug: null, loading: true, error: null })
 
@@ -52,7 +57,9 @@ export function useLLMetadata(lang = 'en') {
     fetchMetadata()
       .then((data) => {
         if (cancelled) return
-        const lls = LL_ORDER.filter((slug) => data[slug]).map((slug) => buildLL(slug, data[slug], lang))
+        const lls = Object.values(data)
+          .sort((a, b) => (a.order || Number.MAX_SAFE_INTEGER) - (b.order || Number.MAX_SAFE_INTEGER))
+          .map((raw) => buildLL(raw, lang))
         const bySlug = Object.fromEntries(lls.map((ll) => [ll.slug, ll]))
         setState({ lls, bySlug, loading: false, error: null })
       })

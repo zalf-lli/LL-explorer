@@ -7,7 +7,6 @@ import { PMTiles, leafletRasterLayer } from 'pmtiles'
 import { useGeoJSON } from '../../hooks/useGeoJSON.js'
 import { LAYER_INDEX } from '../../data/layers.js'
 import { LAYER_SOURCE_INDEX } from '../../data/layer_sources.js'
-import { getLLOutlineColor } from '../../data/ll_display.js'
 import { buildMaskFeature } from '../../lib/buildMaskGeometry.js'
 import { C } from '../../theme.js'
 import { MapLegend } from '../MapLegend.jsx'
@@ -287,7 +286,7 @@ export default function LLMap({ ll, layer, height = 300 }) {
     () => (layerConfig?.available ? buildMaskFeature(boundaryFeature) : null),
     [boundaryFeature, layerConfig?.available],
   )
-  const outlineColor = useMemo(() => getLLOutlineColor(ll.slug), [ll.slug])
+  const outlineColor = useMemo(() => ll.outlineColor || C.orange, [ll.outlineColor])
   const outlineStyle = useMemo(
     () => ({ color: outlineColor, weight: 2.5, fill: false }),
     [outlineColor],

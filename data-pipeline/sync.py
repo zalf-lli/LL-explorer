@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 
 from python._sources import get_layer, load_sources, repo_root, resolve
+from python.generate_metadata import write_metadata
 
 
 STATIC_DATA_FILES = [
@@ -98,6 +99,8 @@ def sync_pmtiles() -> None:
 
 
 def sync_to_app() -> None:
+    write_metadata()
+    print("[sync] generated data/ll_metadata.json from data/ll_content.json")
     for rel_path in STATIC_DATA_FILES:
         source = resolve(rel_path)
         sync_file(source, resolve(f"app/public/{rel_path}"))

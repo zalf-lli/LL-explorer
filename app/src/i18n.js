@@ -27,6 +27,7 @@ const resources = {
         loading: 'Loading...',
         loadingMap: 'Loading map...',
         language: 'Language',
+        preliminaryDataBadge: 'Preliminary data / Vorläufige Daten',
       },
       header: {
         title: 'Living Lab Explorer',
@@ -179,6 +180,7 @@ const resources = {
         loading: 'Wird geladen...',
         loadingMap: 'Karte wird geladen...',
         language: 'Sprache',
+        preliminaryDataBadge: 'Preliminary data / Vorläufige Daten',
       },
       header: {
         title: 'Reallabore Explorer',
