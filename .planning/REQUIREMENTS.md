@@ -41,16 +41,14 @@
 
 ## Traceability
 
-| Requirement | Phase |
-|-------------|-------|
-| CONTENT-01 | 4.1   |
-| CONTENT-02 | 4.1   |
-| CONTENT-03 | 4.1   |
-| CONTENT-04 | 4.1   |
-| PIPELINE-01 | 4.2  |
-| PIPELINE-02 | 4.2  |
-| PIPELINE-03 | 4.2  |
-| CHARTS-01   | 4.3  |
-| CHARTS-02   | 4.3  |
-
-*Roadmap phase mapping to be filled in after roadmap creation.*
+| Requirement | Roadmap Phase | Phase Name |
+|-------------|---------------|------------|
+| CONTENT-01  | 1             | LL Content System |
+| CONTENT-02  | 1             | LL Content System |
+| CONTENT-03  | 1             | LL Content System |
+| CONTENT-04  | 1             | LL Content System |
+| PIPELINE-01 | 2             | BÜK Vector Pipeline |
+| PIPELINE-02 | 2             | BÜK Vector Pipeline |
+| PIPELINE-03 | 2             | BÜK Vector Pipeline |
+| CHARTS-01   | 3             | Chart Data Contract |
+| CHARTS-02   | 3             | Chart Data Contract |
