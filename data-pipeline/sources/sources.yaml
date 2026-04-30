@@ -67,3 +67,36 @@ layers:
       - { value: 100, label: { en: "fruit trees and other woody vegetation", de: "Obst- und Feldgehoelz" }, color: "#8ffffc" }
       - { value: 110, label: { en: "hops", de: "Hopfen" }, color: "#66d1ff" }
       - { value: 111, label: { en: "other agricultural use", de: "Sonstige landwirtschaftliche Nutzung" }, color: "#3da5d9" }
+
+  - id: buek250
+    app_layer: soil
+    kind: vector
+    title:
+      en: "Soil overview map (BUEK250)"
+      de: "Bodenuebersichtskarte (BUEK250)"
+    description:
+      en: "General soil map of Germany at 1:250,000 scale, clipped to each living lab."
+      de: "Bodenuebersichtskarte Deutschlands im Massstab 1:250.000, je Living Lab zugeschnitten."
+    source:
+      provider: "Bundesanstalt fuer Geowissenschaften und Rohstoffe (BGR)"
+      dataset: "Bodenuebersichtskarte der Bundesrepublik Deutschland 1:250.000 (BUEK250), Version 6.0 mit Gewaesserflaechen"
+      url: "https://www.bgr.bund.de/DE/Themen/Boden/Projekte/Flaechen_Rauminformationen_Boden/BUEK250/BUEK250.html"
+      doi: "https://doi.org/10.25928/BUEK250_6.0"
+      download_url: "https://download.bgr.de/bgr/boden/BUEK250/gpkg/buek250_mgm_utm_v60.zip"
+      license: "Nutzungsbestimmungen fuer die Bereitstellung von Geodaten des Bundes (GeoNutzV)"
+      attribution: "Datenquelle: BUEK250 V6.0, (c) BGR, Hannover, 2024"
+      citation: "BGR (2024): Bodenuebersichtskarte der Bundesrepublik Deutschland 1:250.000 (BUEK250), Hannover. https://doi.org/10.25928/BUEK250_6.0"
+    input:
+      path: data/buek250_mgm_utm_v60/buek250_mgm_utm_v60.gpkg
+      download_url: "https://download.bgr.de/bgr/boden/BUEK250/gpkg/buek250_mgm_utm_v60.zip"
+      crs: "EPSG:25832"
+    build:
+      script: python/build_vector.py
+    vector:
+      gpkg_layer: buek250_mgm_utm_v60_poly
+      keep_fields: [SYM_NR, GEN_ID, BEMERKUNG]
+      simplify_tolerance: 0.0005
+      coordinate_precision: 0.0001
+      output_dir: data/geojson
+    output:
+      geojson_pattern: "data/geojson/buek250-{slug}.geojson"

@@ -1,11 +1,11 @@
-# Roadmap â€” LL-Explorer Phase 4
+# Roadmap — LL-Explorer Phase 4
 
 ## Phases
 
 | # | Phase | Goal | Requirements | UI |
 |---|-------|------|--------------|-----|
 | 1 | LL Content System | Replace ad-hoc hardcoded LL config with a structured, hand-authored JSON merged into a single metadata file | CONTENT-01, CONTENT-02, CONTENT-03, CONTENT-04 | yes |
-| 2 | BÃœK Vector Pipeline | Process the BÃœK soil shapefile through a new vector pipeline path and verify all pipeline outputs with smoke tests | PIPELINE-01, PIPELINE-02, PIPELINE-03 | no |
+| 2 | BÜK Vector Pipeline | Process the BÜK soil source through a new vector pipeline path and verify all pipeline outputs with smoke tests | PIPELINE-01, PIPELINE-02, PIPELINE-03 | no |
 | 3 | Chart Data Contract | Define and plumb the per-source chart summary interface so future chart implementations have a clear, stable target | CHARTS-01, CHARTS-02 | no |
 
 ---
@@ -40,15 +40,17 @@
 
 ---
 
-### Phase 2: BÃœK Vector Pipeline
+### Phase 2: BÜK Vector Pipeline
 
-**Goal:** Process the existing BÃœK1000 soil shapefile through a new `build_vector.py` script, producing per-LL GeoJSON outputs, and add `pytest` smoke tests covering both raster and vector pipeline outputs.
+**Status:** Complete (2026-04-30)
+
+**Goal:** Process the BUEK250 GeoPackage through a new `build_vector.py` script, producing per-LL GeoJSON outputs, and add `pytest` smoke tests covering both raster and vector pipeline outputs.
 **Requirements:** PIPELINE-01, PIPELINE-02, PIPELINE-03
 **UI hint**: no
 
 **Success criteria:**
-1. Running `python data-pipeline/python/build_vector.py --layer buek` produces one GeoJSON file per LL in `data/geojson/` with correct CRS (EPSG:4326), non-empty features, and a build log line reporting output file size
-2. Running `python -m pytest data-pipeline/tests/` passes all smoke tests, verifying PMTiles output (existing layer) and GeoJSON outputs (new BÃœK layer) without re-running the full build
+1. Running `python data-pipeline/python/build_vector.py --layer buek250` produces one GeoJSON file per LL in `data/geojson/` with correct CRS (EPSG:4326), non-empty features, and a build log line reporting output file size
+2. Running `python -m pytest data-pipeline/tests/` passes all smoke tests, verifying PMTiles output (existing layer) and GeoJSON outputs (new BÜK layer) without re-running the full build
 3. The script aborts with a clear error message (not a silent empty file) if CRS misalignment or invalid geometries are detected
 
 ---
@@ -61,7 +63,7 @@
 
 **Success criteria:**
 1. The chart JSON schema is documented (shape, field names, types, bilingual label convention) in a location a future implementer can find without reading source code
-2. A `sources.yaml` entry with a `chart:` stanza passes `sync.py` without errors; `sync.py` logs a `[chart]` line and copies the output file if it exists, or logs `[chart] skipped â€” not yet built` if it doesn't
+2. A `sources.yaml` entry with a `chart:` stanza passes `sync.py` without errors; `sync.py` logs a `[chart]` line and copies the output file if it exists, or logs `[chart] skipped — not yet built` if it doesn't
 3. The crop-types layer (existing) can be given a `chart:` stanza as a dry-run validation without writing any chart computation code
 
 ---
@@ -74,9 +76,9 @@
 | CONTENT-02  | 1     | LL Content System |
 | CONTENT-03  | 1     | LL Content System |
 | CONTENT-04  | 1     | LL Content System |
-| PIPELINE-01 | 2     | BÃœK Vector Pipeline |
-| PIPELINE-02 | 2     | BÃœK Vector Pipeline |
-| PIPELINE-03 | 2     | BÃœK Vector Pipeline |
+| PIPELINE-01 | 2     | BÜK Vector Pipeline |
+| PIPELINE-02 | 2     | BÜK Vector Pipeline |
+| PIPELINE-03 | 2     | BÜK Vector Pipeline |
 | CHARTS-01   | 3     | Chart Data Contract |
 | CHARTS-02   | 3     | Chart Data Contract |
 
