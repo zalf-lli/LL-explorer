@@ -30,6 +30,12 @@ Phase 2.2 completed on 2026-04-30 and replaced the shallow German-only soil look
 
 - Chart data embedded in `ll_metadata.json` OR separate per-LL files in `app/public/data/charts/`? (decide before Phase 3)
 
+## Backlog / Follow-up Todos
+
+| ID | Phase | Item | Status |
+|----|-------|------|--------|
+| TODO-01 | 2.2 | Improve tooltips: fix mixed German/English text, reduce verbosity, improve colour divergence in soil layer legend | open |
+
 ## Roadmap Evolution
 
 - 2026-04-30: Inserted Phase 2.1 "Soil Map Tab Integration" after Phase 2 to wire the new BUEK GeoJSON outputs into the app before Phase 3
