@@ -18,6 +18,24 @@ export const LAYER_SOURCES = [
     "license": "CC-BY-4.0",
     "attribution": "(c) DLR (2024), CC BY 4.0",
     "citation": "Asam et al. 2022"
+  },
+  {
+    "id": "buek250",
+    "appLayer": "soil",
+    "title": {
+      "en": "Soil overview map (BUEK250)",
+      "de": "Bodenuebersichtskarte (BUEK250)"
+    },
+    "description": {
+      "en": "General soil map of Germany at 1:250,000 scale, clipped to each living lab.",
+      "de": "Bodenuebersichtskarte Deutschlands im Massstab 1:250.000, je Living Lab zugeschnitten."
+    },
+    "provider": "Bundesanstalt fuer Geowissenschaften und Rohstoffe (BGR)",
+    "dataset": "Bodenuebersichtskarte der Bundesrepublik Deutschland 1:250.000 (BUEK250), Version 6.0 mit Gewaesserflaechen",
+    "url": "https://www.bgr.bund.de/DE/Themen/Boden/Projekte/Flaechen_Rauminformationen_Boden/BUEK250/BUEK250.html",
+    "license": "Nutzungsbestimmungen fuer die Bereitstellung von Geodaten des Bundes (GeoNutzV)",
+    "attribution": "Datenquelle: BUEK250 V6.0, (c) BGR, Hannover, 2024",
+    "citation": "BGR (2024): Bodenuebersichtskarte der Bundesrepublik Deutschland 1:250.000 (BUEK250), Hannover. https://doi.org/10.25928/BUEK250_6.0"
   }
 ]
 

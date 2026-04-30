@@ -1,18 +1,43 @@
 import { LANDUSE_LEGEND } from './landuse_legend.js'
 
+const SOIL_LEGEND = [
+  { value: 'brown-soils', en: 'Brown soils', de: 'Braunerden', color: '#b88752' },
+  { value: 'luvisols', en: 'Luvisols', de: 'Lessives', color: '#c29b68' },
+  { value: 'gley-soils', en: 'Gley soils', de: 'Gleye', color: '#a87445' },
+  { value: 'special-areas', en: 'Water / special areas', de: 'Gewaesser / Sonderflaechen', color: '#88bfd9' },
+]
+
 export const LAYERS = [
   {
     id: 'landuse',
+    type: 'raster',
     pmtilesUrl: 'data/pmtiles/landuse-croptypes.pmtiles',
     legend: LANDUSE_LEGEND,
     available: true,
   },
-  { id: 'climate', pmtilesUrl: null, legend: null, available: false },
-  { id: 'soil', pmtilesUrl: null, legend: null, available: false },
-  { id: 'economic', pmtilesUrl: null, legend: null, available: false },
+  { id: 'climate', type: 'placeholder', pmtilesUrl: null, legend: null, available: false },
+  {
+    id: 'soil',
+    type: 'vector',
+    pmtilesUrl: null,
+    geojsonPathPattern: 'data/geojson/buek250-{slug}.geojson',
+    legend: SOIL_LEGEND,
+    legendNoteKey: 'legend.soil.note',
+    available: true,
+  },
+  { id: 'economic', type: 'placeholder', pmtilesUrl: null, legend: null, available: false },
 ]
 
 export const LAYER_INDEX = new Map(LAYERS.map((layer) => [layer.id, layer]))
+
+export function resolveLayerAsset(layerId, { slug } = {}) {
+  const layer = LAYER_INDEX.get(layerId)
+  if (layer?.type === 'raster') return layer.pmtilesUrl ?? null
+  if (layer?.type === 'vector' && layer.geojsonPathPattern && slug) {
+    return layer.geojsonPathPattern.replace('{slug}', slug)
+  }
+  return null
+}
 
 export const LAYER_COLORS = {
   landuse: { arable: '#c2e077', forest: '#276d4e', grassland: '#83d2af', settlement: '#b5ad9e', water: '#8ffffc' },

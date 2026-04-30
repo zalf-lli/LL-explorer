@@ -148,7 +148,9 @@ This will:
 
 - copy `ll_metadata.json` and the GeoJSON files into `app/public/data/`
 - copy any built `.pmtiles` files into `app/public/data/pmtiles/`
+- copy committed vector GeoJSON fixtures such as `data/geojson/buek250-{slug}.geojson` into `app/public/data/geojson/`
 - regenerate `app/src/data/landuse_legend.js` from `sources/sources.yaml`
+- regenerate `app/src/data/layer_sources.js` so map-source attribution stays in sync with `sources.yaml`
 
 ## Adding a new data source
 
@@ -223,6 +225,26 @@ Expected result:
 ```powershell
 python sync.py
 ```
+
+## BUEK250 soil semantics contract
+
+The `buek250` vector layer now exports a semantic runtime contract instead of only the old shallow `soil_name` / `soil_type_*` lookup.
+
+Primary app-facing fields:
+
+- `feature_kind`: `soil_unit`, `water_area`, or `special_area`
+- `soil_label_de` / `soil_label_en`: cleaned legend or special-area label for UI display
+- `soil_group_key`, `soil_group_de`, `soil_group_en`: stable grouping field for map styling and legend logic
+- `general_unit_de` / `general_unit_en`: broader BUEK general legend label
+- `parent_material_code`, `parent_material_de`, `parent_material_en`: grouped substrate provenance from `GL_BAGFlaechentyp`
+- `profile_summary_de` / `profile_summary_en`, `profile_count`, `lead_horizon_count`: compact profile summary derived from `PROFIL` and `HORIZONT`
+- `semantic_source`, `semantic_version`: provenance for the normalized contract
+
+Fallback rules:
+
+- `GEN_ID`, `SYM_NR`, and `BEMERKUNG` stay in the export for provenance and debugging, but the frontend should treat them as fallback data rather than the main semantic contract.
+- Features without `GEN_ID` are exported explicitly as `water_area` or `special_area` instead of requiring the app to infer this from null raw fields.
+- English labels come from deterministic normalization rules in [`python/soil_semantics.py`](./python/soil_semantics.py), so translations are repo-tracked and reproducible.
 
 ### Full working Windows sequence
 

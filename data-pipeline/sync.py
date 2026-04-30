@@ -98,6 +98,25 @@ def sync_pmtiles() -> None:
         sync_file(source, resolve(sync_target))
 
 
+def sync_vector_geojson() -> None:
+    sources = load_sources()
+    root = repo_root()
+    for layer in sources["layers"]:
+        if layer.get("kind") != "vector":
+            continue
+        output = layer.get("output", {})
+        geojson_pattern = output.get("geojson_pattern")
+        if not geojson_pattern:
+            continue
+        matches = sorted(root.glob(geojson_pattern.replace("{slug}", "*")))
+        if not matches:
+            print(f"[skip] no vector outputs matched {geojson_pattern}")
+            continue
+        for source in matches:
+            rel_path = source.relative_to(root)
+            sync_file(source, resolve(Path("app/public") / rel_path))
+
+
 def sync_to_app() -> None:
     write_metadata()
     print("[sync] generated data/ll_metadata.json from data/ll_content.json")
@@ -105,6 +124,7 @@ def sync_to_app() -> None:
         source = resolve(rel_path)
         sync_file(source, resolve(f"app/public/{rel_path}"))
     sync_pmtiles()
+    sync_vector_geojson()
     generate_landuse_legend()
     generate_layer_sources()
 

@@ -27,20 +27,24 @@ function fetchOne(url) {
 // Fetch one or more GeoJSON files in parallel and return them in the same order.
 // Pass a string for a single URL; it will still be returned in an array for consistency.
 export function useGeoJSON(urls) {
-  const key = Array.isArray(urls) ? urls.join('|') : urls
-  const [state, setState] = useState({ data: null, loading: true, error: null })
+  const list = Array.isArray(urls) ? urls.filter(Boolean) : urls ? [urls] : []
+  const key = list.join('|')
+  const isEnabled = list.length > 0
+  const [state, setState] = useState({ key, data: null, loading: isEnabled, error: null })
 
   useEffect(() => {
     let cancelled = false
-    const list = Array.isArray(urls) ? urls : [urls]
+    if (!isEnabled) return () => {
+      cancelled = true
+    }
     Promise.all(list.map(fetchOne))
       .then((data) => {
         if (cancelled) return
-        setState({ data, loading: false, error: null })
+        setState({ key, data, loading: false, error: null })
       })
       .catch((error) => {
         if (cancelled) return
-        setState({ data: null, loading: false, error })
+        setState({ key, data: null, loading: false, error })
       })
     return () => {
       cancelled = true
@@ -48,6 +52,14 @@ export function useGeoJSON(urls) {
     // key is a stable string derived from urls
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key])
+
+  if (!isEnabled) {
+    return { data: null, loading: false, error: null }
+  }
+
+  if (state.key !== key) {
+    return { data: null, loading: true, error: null }
+  }
 
   return state
 }

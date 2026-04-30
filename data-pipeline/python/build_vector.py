@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from _sources import ensure_input_available, get_layer, load_sources, repo_root, resolve
+from soil_semantics import apply_runtime_contract, load_semantic_lookup
 
 
 def parse_args() -> argparse.Namespace:
@@ -34,6 +35,21 @@ def _validate_declared_crs(layer_id: str, actual_crs: object, declared_crs: str 
 def _normalize_properties(frame) -> None:
     if "GEN_ID" in frame.columns:
         frame["GEN_ID"] = frame["GEN_ID"].round().astype("Int64")
+
+
+def _load_semantic_frame(vector_cfg: dict):
+    semantics_cfg = vector_cfg.get("semantics") or {}
+    if not semantics_cfg:
+        return None
+
+    sqlite_path = semantics_cfg.get("sqlite_path")
+    if not sqlite_path:
+        raise RuntimeError("[error] vector.semantics must define sqlite_path.")
+
+    source_path = resolve(sqlite_path)
+    if not source_path.exists():
+        raise RuntimeError(f"[error] semantic database not found: {source_path.relative_to(repo_root())}")
+    return load_semantic_lookup(semantics_cfg, source_path)
 
 
 def _write_geojson(frame, output_path: Path) -> None:
@@ -69,6 +85,7 @@ def build_layer(layer_id: str) -> None:
     output_pattern = output_cfg.get("geojson_pattern")
     source_crs = input_cfg.get("crs")
     clip_path = resolve("data/ll_boundaries.geojson")
+    lookup = _load_semantic_frame(vector_cfg)
 
     print(f"[input] reading {input_path.relative_to(repo_root())} layer={gpkg_layer}")
     source = gpd.read_file(input_path, layer=gpkg_layer)
@@ -81,6 +98,9 @@ def build_layer(layer_id: str) -> None:
 
     source = source[keep_fields + ["geometry"]].copy()
     _normalize_properties(source)
+    if lookup is not None:
+        source = source.merge(lookup, on="GEN_ID", how="left")
+        apply_runtime_contract(source)
 
     boundaries = gpd.read_file(clip_path)
     if boundaries.crs is None:
@@ -92,10 +112,7 @@ def build_layer(layer_id: str) -> None:
 
     boundaries = boundaries.to_crs(source.crs)
 
-    if output_dir.exists():
-        for stale_file in output_dir.glob(f"{layer_id}-*.geojson"):
-            stale_file.unlink()
-    else:
+    if not output_dir.exists():
         output_dir.mkdir(parents=True, exist_ok=True)
 
     for row in boundaries.itertuples(index=False):

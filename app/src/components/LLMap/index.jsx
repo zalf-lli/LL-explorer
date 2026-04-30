@@ -5,7 +5,7 @@ import { GeoJSON, MapContainer, TileLayer } from 'react-leaflet'
 import { useMap } from 'react-leaflet/hooks'
 import { PMTiles, leafletRasterLayer } from 'pmtiles'
 import { useGeoJSON } from '../../hooks/useGeoJSON.js'
-import { LAYER_INDEX } from '../../data/layers.js'
+import { LAYER_INDEX, resolveLayerAsset } from '../../data/layers.js'
 import { LAYER_SOURCE_INDEX } from '../../data/layer_sources.js'
 import { buildMaskFeature } from '../../lib/buildMaskGeometry.js'
 import { C } from '../../theme.js'
@@ -28,6 +28,19 @@ const MASK_STYLE = {
   stroke: false,
   interactive: false,
 }
+const SOIL_PALETTE = ['#b88752', '#c29b68', '#a87445', '#d0b385', '#8f6136', '#c98b5e', '#aa7c57', '#bfa07a']
+const SOIL_SPECIAL_STYLE = {
+  color: '#4f89a3',
+  weight: 0.8,
+  fillColor: '#88bfd9',
+  fillOpacity: 0.7,
+}
+const SOIL_STRUCTURAL_STYLE = {
+  color: '#768a8f',
+  weight: 0.7,
+  fillColor: '#c6d2d5',
+  fillOpacity: 0.65,
+}
 
 function getPmtiles(url) {
   if (!PMTILES_CACHE.has(url)) {
@@ -49,20 +62,220 @@ function getBounds(featureLike) {
 
 function RasterPmtilesLayer({ layerId }) {
   const map = useMap()
-  const layerConfig = LAYER_INDEX.get(layerId)
+  const layerUrl = resolveLayerAsset(layerId)
 
   useEffect(() => {
-    if (!layerConfig?.pmtilesUrl) return undefined
-    const overlay = leafletRasterLayer(getPmtiles(layerConfig.pmtilesUrl), {
+    if (!layerUrl) return undefined
+    const overlay = leafletRasterLayer(getPmtiles(layerUrl), {
       opacity: 0.85,
     })
     overlay.addTo(map)
     return () => {
       map.removeLayer(overlay)
     }
-  }, [layerConfig, map])
+  }, [layerUrl, map])
 
   return null
+}
+
+function hashSoilKey(value) {
+  return String(value)
+    .split('')
+    .reduce((acc, char) => acc * 31 + char.charCodeAt(0), 7)
+}
+
+function getSemanticSoilKey(props) {
+  if (props.feature_kind === 'water_area') return 'water-area'
+  if (props.feature_kind === 'special_area') return 'special-area'
+  return props.soil_group_key || props.parent_material_code || props.SYM_NR || props.GEN_ID || 'soil-unit'
+}
+
+function getSoilColor(groupKey) {
+  return SOIL_PALETTE[Math.abs(hashSoilKey(groupKey)) % SOIL_PALETTE.length]
+}
+
+function getLocalizedValue(props, key, lang) {
+  if (!props) return null
+  const preferred = props[`${key}_${lang}`]
+  const fallback = props[`${key}_${lang === 'de' ? 'en' : 'de'}`]
+  return preferred || fallback || null
+}
+
+function getSoilStyle(feature) {
+  const props = feature?.properties ?? {}
+  if (props.feature_kind === 'water_area') return SOIL_SPECIAL_STYLE
+  if (props.feature_kind === 'special_area') return SOIL_STRUCTURAL_STYLE
+  const color = getSoilColor(getSemanticSoilKey(props))
+  return {
+    color: '#6e4d31',
+    weight: 0.6,
+    fillColor: color,
+    fillOpacity: 0.7,
+  }
+}
+
+function buildSoilLegendEntries(collection) {
+  if (!collection?.features?.length) return null
+
+  const counts = new Map()
+  let hasWater = false
+  let hasSpecial = false
+
+  for (const feature of collection.features) {
+    const props = feature?.properties ?? {}
+    if (props.feature_kind === 'water_area') {
+      hasWater = true
+      continue
+    }
+    if (props.feature_kind === 'special_area') {
+      hasSpecial = true
+      continue
+    }
+    const key = getSemanticSoilKey(props)
+    if (!counts.has(key)) {
+      counts.set(key, {
+        value: key,
+        en: props.soil_group_en || props.soil_label_en || 'Soil unit',
+        de: props.soil_group_de || props.soil_label_de || 'Bodeneinheit',
+        color: getSoilColor(key),
+        count: 0,
+      })
+    }
+    counts.get(key).count += 1
+  }
+
+  const dominant = [...counts.values()]
+    .sort((left, right) => right.count - left.count || left.en.localeCompare(right.en))
+    .slice(0, 5)
+    .map((entry) => ({
+      value: entry.value,
+      en: entry.en,
+      de: entry.de,
+      color: entry.color,
+    }))
+
+  if (hasWater) {
+    dominant.push({
+      value: 'water-area',
+      en: 'Water areas',
+      de: 'Gewässer',
+      color: SOIL_SPECIAL_STYLE.fillColor,
+    })
+  }
+  if (hasSpecial) {
+    dominant.push({
+      value: 'special-area',
+      en: 'Special areas',
+      de: 'Sonderflächen',
+      color: SOIL_STRUCTURAL_STYLE.fillColor,
+    })
+  }
+
+  return dominant
+}
+
+function createTooltipRow(document, label, value, isTitle = false) {
+  const row = document.createElement('div')
+  row.style.marginBottom = isTitle ? '6px' : '4px'
+
+  if (isTitle) {
+    row.style.fontWeight = '700'
+    row.style.whiteSpace = 'normal'
+    row.textContent = value
+    return row
+  }
+
+  const labelNode = document.createElement('div')
+  labelNode.style.fontSize = '10px'
+  labelNode.style.fontWeight = '700'
+  labelNode.style.letterSpacing = '0.04em'
+  labelNode.style.textTransform = 'uppercase'
+  labelNode.style.color = '#4a5f60'
+  labelNode.textContent = label
+
+  const valueNode = document.createElement('div')
+  valueNode.style.whiteSpace = 'normal'
+  valueNode.textContent = value
+
+  row.appendChild(labelNode)
+  row.appendChild(valueNode)
+  return row
+}
+
+function bindSoilTooltip(feature, layer, t, lang) {
+  const props = feature?.properties ?? {}
+  const title =
+    props.feature_kind === 'soil_unit'
+      ? getLocalizedValue(props, 'soil_group', lang) || getLocalizedValue(props, 'soil_label', lang)
+      : getLocalizedValue(props, 'soil_label', lang)
+  const detailLabel = getLocalizedValue(props, 'soil_label', lang)
+  const parentMaterial = getLocalizedValue(props, 'parent_material', lang)
+  const leadProfile = getLocalizedValue(props, 'lead_profile', lang)
+  const secondaryType = getLocalizedValue(props, 'soil_type_secondary', lang)
+  const specialType =
+    props.feature_kind === 'water_area'
+      ? t('map.soilTooltip.waterArea')
+      : props.feature_kind === 'special_area'
+        ? t('map.soilTooltip.specialArea')
+        : null
+
+  const wrapper = window.document.createElement('div')
+  wrapper.style.maxWidth = '280px'
+  wrapper.style.lineHeight = '1.35'
+
+  if (title) {
+    wrapper.appendChild(createTooltipRow(window.document, '', title, true))
+  }
+
+  if (props.feature_kind === 'soil_unit') {
+    if (detailLabel && detailLabel !== title) {
+      wrapper.appendChild(createTooltipRow(window.document, t('map.soilTooltip.legendUnit'), detailLabel))
+    }
+    if (secondaryType) {
+      wrapper.appendChild(createTooltipRow(window.document, t('map.soilTooltip.secondaryType'), secondaryType))
+    }
+    if (parentMaterial) {
+      wrapper.appendChild(createTooltipRow(window.document, t('map.soilTooltip.parentMaterial'), parentMaterial))
+    }
+    if (leadProfile) {
+      wrapper.appendChild(createTooltipRow(window.document, t('map.soilTooltip.profile'), leadProfile))
+    }
+  } else if (specialType) {
+    wrapper.appendChild(createTooltipRow(window.document, t('map.soilTooltip.type'), specialType))
+  }
+
+  layer.bindTooltip(wrapper, {
+    sticky: true,
+    direction: 'top',
+    opacity: 0.95,
+  })
+}
+
+function SoilStatusBadge({ message, tone = 'info' }) {
+  const background = tone === 'error' ? 'rgba(124, 40, 40, 0.92)' : 'rgba(255,255,255,0.94)'
+  const color = tone === 'error' ? '#fff4f0' : C.teal
+  const border = tone === 'error' ? '1px solid rgba(124, 40, 40, 0.2)' : `1px solid ${C.mutedLight}`
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 12,
+        left: 12,
+        zIndex: 500,
+        maxWidth: 280,
+        padding: '8px 10px',
+        borderRadius: 10,
+        background,
+        border,
+        color,
+        fontSize: 11.5,
+        fontWeight: 600,
+        boxShadow: '0 4px 12px rgba(2,35,34,0.12)',
+      }}
+    >
+      {message}
+    </div>
+  )
 }
 
 function StatusMap({ layerId, slug, message }) {
@@ -276,11 +489,22 @@ function MapInfoControl({ layer }) {
 }
 
 export default function LLMap({ ll, layer, height = 300 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const layerConfig = LAYER_INDEX.get(layer)
   const { data, loading, error } = useGeoJSON('data/ll_boundaries.geojson')
+  const soilUrl = useMemo(
+    () => (layerConfig?.type === 'vector' ? resolveLayerAsset(layer, { slug: ll.slug }) : null),
+    [layer, layerConfig?.type, ll.slug],
+  )
+  const soilState = useGeoJSON(soilUrl)
+  const lang = i18n.language?.startsWith('de') ? 'de' : 'en'
 
   const boundaryFeature = useMemo(() => selectBoundary(data, ll.slug), [data, ll.slug])
+  const soilFeatureCollection = useMemo(
+    () => (Array.isArray(soilState.data) ? soilState.data[0] ?? null : null),
+    [soilState.data],
+  )
+  const soilLegendEntries = useMemo(() => buildSoilLegendEntries(soilFeatureCollection), [soilFeatureCollection])
   const bounds = useMemo(() => (boundaryFeature ? getBounds(boundaryFeature) : null), [boundaryFeature])
   const maskFeature = useMemo(
     () => (layerConfig?.available ? buildMaskFeature(boundaryFeature) : null),
@@ -330,15 +554,25 @@ export default function LLMap({ ll, layer, height = 300 }) {
             subdomains={TILE_SUBDOMAINS}
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           />
-          {layerConfig?.available ? <RasterPmtilesLayer layerId={layer} /> : null}
+          {layerConfig?.type === 'raster' ? <RasterPmtilesLayer layerId={layer} /> : null}
+          {layerConfig?.type === 'vector' && soilFeatureCollection ? (
+            <GeoJSON
+              key={`soil-${ll.slug}`}
+              data={soilFeatureCollection}
+              style={getSoilStyle}
+              onEachFeature={(feature, featureLayer) => bindSoilTooltip(feature, featureLayer, t, lang)}
+            />
+          ) : null}
           {maskFeature ? <GeoJSON key={`mask-${ll.slug}`} data={maskFeature} style={MASK_STYLE} /> : null}
           <GeoJSON key={`outline-${ll.slug}-${outlineColor}`} data={boundaryFeature} style={outlineStyle} />
         </MapContainer>
+        {layerConfig?.type === 'vector' && soilState.loading ? <SoilStatusBadge message={t('map.soilLoading')} /> : null}
+        {layerConfig?.type === 'vector' && soilState.error ? <SoilStatusBadge tone="error" message={t('map.soilLoadError')} /> : null}
         {layerConfig?.available ? null : <ComingSoonBadge />}
         <MapInfoControl layer={layer} />
       </div>
       <div style={{ padding: '10px 16px', borderTop: `1px solid ${C.mutedLight}`, background: C.bg }}>
-        <MapLegend layer={layer} />
+        <MapLegend layer={layer} entries={soilLegendEntries} note={t('legend.soil.note')} />
       </div>
     </div>
   )

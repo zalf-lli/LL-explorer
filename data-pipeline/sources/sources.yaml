@@ -95,6 +95,19 @@ layers:
     vector:
       gpkg_layer: buek250_mgm_utm_v60_poly
       keep_fields: [SYM_NR, GEN_ID, BEMERKUNG]
+      semantics:
+        sqlite_path: data/buek250_mgm_utm_v60/buek250_sachdatenbank_v10.sqlite
+        contract_version: buek250-soil-semantics-v1
+        tables:
+          legend: buek250_Legendeneinheit__v10_tbl
+          general_legend: buek250_GL_Einheit_v10_tbl
+          parent_material: buek250_GL_BAGFlaechentyp_v10_tbl
+          profile: buek250_Profil__v10_tbl
+          horizon: buek250_Horizont__v10_tbl
+        fallback_policy:
+          sparse_values: Prefer semantic label/group/profile fields and keep GEN_ID, SYM_NR, and BEMERKUNG as provenance-only raw values.
+          special_areas: Features without GEN_ID become explicit water_area or special_area records derived from BEMERKUNG.
+          translations: English labels come from deterministic normalization rules in data-pipeline/python/soil_semantics.py.
       simplify_tolerance: 0.0005
       coordinate_precision: 0.0001
       output_dir: data/geojson
