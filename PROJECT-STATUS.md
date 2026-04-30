@@ -1,6 +1,6 @@
 # LL Explorer Project Status
 
-This file is a condensed, updated copy of the original implementation plan you provided, with current progress marked.
+This file is a condensed implementation plan with current progress marked.
 
 ## Current status
 
@@ -11,35 +11,13 @@ This file is a condensed, updated copy of the original implementation plan you p
 - Phase 4: In progress
 - Phase 5: Not started
 
-Work is active on the completed Phase 3 map plus the crop-types slice of Phase 4.
+Work is active on the completed Phase 3 map plus Phase 4.
 
-## Current implementation checklist
-
-- [x] Convert the approved Phase 3 + crop-types plan into a live progress checklist in this file
-- [x] Add `sources.yaml` and source-registry docs for the crop-types layer
-- [x] Add pipeline helpers for loading sources, resolving repo paths, and locating `pmtiles`
-- [x] Add `build_pmtiles.py` for clipping, reprojection, palette handling, MBTiles generation, and PMTiles conversion
-- [x] Add `sync.py` to copy pipeline outputs into `app/public/data/` and generate `landuse_legend.js`
-- [x] Update pipeline requirements, README instructions, `.gitignore`, and the latent repo-root path bug in `fetch_nuts.py`
-- [x] Wire app data files: `landuse_legend.js`, `layers.js`, `main.jsx`, and LL detail prop updates
-- [x] Update `MapLegend.jsx` to render generated land-use legend entries with language-aware labels
-- [x] Replace the placeholder `LLMap` with a real `react-leaflet` + PMTiles map and stub unavailable tabs cleanly
-- [x] Install the new frontend dependencies and refresh `package-lock.json`
-- [x] Run verification (`npm run lint`, `npm run build`, and targeted Python checks) and record results here
-- [ ] Add a one-command pipeline task to build or refresh all layer outputs declared in `data-pipeline/sources/sources.yaml`
-
-### Verification notes
-
-- `npm run lint`: passes
-- `npm run build`: passes; Leaflet/PMTiles code lands in a separate `LLMap-*.js` chunk
-- `python data-pipeline/sync.py`: passes; syncs GeoJSON files into `app/public/data/` and regenerates `app/src/data/landuse_legend.js`
-- `python data-pipeline/python/build_pmtiles.py --list`: passes
-- `python data-pipeline/python/build_pmtiles.py --layer landuse-croptypes`: passes in the configured Windows pipeline environment; writes `data/pmtiles/landuse-croptypes.pmtiles` at about 22.7 MB
-
-## What has been done
+## Updated phase plan
 
 ### Phase 0: Scaffold and cleanup
 
+Status: Done
 - Created the Vite React app in `app/`
 - Added ESLint and Prettier setup
 - Moved pipeline/docs assets into:
@@ -49,8 +27,18 @@ Work is active on the completed Phase 3 map plus the crop-types slice of Phase 4
 - Copied runtime data into `app/public/data/`
 - Removed unused scaffold files from the Vite starter
 
-### Phase 1: Port wireframe into modular React files
+### Phase 1: Port wireframe components
 
+Status: Done
+
+Delivered:
+
+- Modular React component structure
+- Landing page
+- LL detail page
+- Router-based navigation
+- Metadata and GeoJSON loading
+- Placeholder charts and placeholder LL detail map
 - Ported the wireframe into reusable React components under `app/src/components/`
 - Added routed app shell in `app/src/App.jsx`
 - Added:
@@ -66,45 +54,6 @@ Work is active on the completed Phase 3 map plus the crop-types slice of Phase 4
 - Kept the lightweight landing SVG map
 - Kept the detail map as a Phase 3 placeholder component
 
-### Phase 2: i18n
-
-- Added `i18next` and `react-i18next`
-- Added `app/src/i18n.js`
-- Added EN / DE language toggle in the header
-- Switched UI strings to translation keys
-- Wired metadata loading to the active language
-- Added language persistence with `localStorage`
-
-## Important implementation notes
-
-- `app/src/App.jsx` was repaired from the old Vite starter and now uses the real routed app shell.
-- `app/vite.config.js` was adjusted so builds work correctly from the linked workspace path `C:\git\LL-explorer`.
-- `npm run lint` passes.
-- `npm run build` passes.
-- The first real thematic raster layer now builds end to end and syncs into the app:
-  - `data/pmtiles/landuse-croptypes.pmtiles`
-  - `app/public/data/pmtiles/landuse-croptypes.pmtiles`
-- The Windows pipeline setup is now documented in `data-pipeline/README.md`, including the working Python 3.12 and `pmtiles.exe` flow.
-
-## Updated phase plan
-
-### Phase 0: Scaffold and cleanup
-
-Status: Done
-
-### Phase 1: Port wireframe components
-
-Status: Done
-
-Delivered:
-
-- Modular React component structure
-- Landing page
-- LL detail page
-- Router-based navigation
-- Metadata and GeoJSON loading
-- Placeholder charts and placeholder LL detail map
-
 ### Phase 2: Bilingual UI
 
 Status: Done
@@ -115,6 +64,12 @@ Delivered:
 - UI translation layer
 - Metadata language switching
 - Saved language preference
+- Added `i18next` and `react-i18next`
+- Added `app/src/i18n.js`
+- Added EN / DE language toggle in the header
+- Switched UI strings to translation keys
+- Wired metadata loading to the active language
+- Added language persistence with `localStorage`
 
 ### Phase 3: Real map with react-leaflet + PMTiles
 
@@ -130,44 +85,31 @@ Delivered:
 
 ### Phase 4.1: LL data ingestion
 
-Description of feature requirements: Presently the information for the LLs is entered in data-pipeline\python\fetch_nuts.py this is a throwback to when the app was just a dummy version. What is need is a concrete data input system ideally in a structured format like JSON. However, some data will be user entered i.e. taglines and descriptions etc. but some i.e. the data for the charts will be generated programmatically from the preocessing of the spatial data layers (data-pipeline\sources\sources.yaml). Hence the workflow for ingesting data during the app build needs to account for both.  
+Description of feature requirements: Presently the information for the LLs is entered in data-pipeline\python\fetch_nuts.py this is a throwback to when the app was just a dummy version. What is needed is a concrete data input system ideally in a structured format like JSON. However, the challenge is that some data will be user entered i.e. taglines and textual descriptions etc. but some of the data for the charts will be generated programmatically from the preocessing of the spatial data layers (data-pipeline\sources\sources.yaml). Hence the workflow for ingesting data during the app build needs to account for both.  
 
 ### Phase 4.2: Extensible geodata pipeline
 
 Status: In progress
 
-Planned:
+Tasks completed:
+- [x] Convert the approved Phase 3 + crop-types plan into a live progress checklist in this file
+- [x] Add `sources.yaml` and source-registry docs for the crop-types layer
+- [x] Add pipeline helpers for loading sources, resolving repo paths, and locating `pmtiles`
+- [x] Add `build_pmtiles.py` for clipping, reprojection, palette handling, MBTiles generation, and PMTiles conversion
+- [x] Add `sync.py` to copy pipeline outputs into `app/public/data/` and generate `landuse_legend.js`
+- [x] Update pipeline requirements, README instructions, `.gitignore`, and the latent repo-root path bug in `fetch_nuts.py`
+- [x] Wire app data files: `landuse_legend.js`, `layers.js`, `main.jsx`, and LL detail prop updates
+- [x] Update `MapLegend.jsx` to render generated land-use legend entries with language-aware labels
+- [x] Replace the placeholder `LLMap` with a real `react-leaflet` + PMTiles map and stub unavailable tabs cleanly
+- [x] Install the new frontend dependencies and refresh `package-lock.json`
+- [x] Run verification (`npm run lint`, `npm run build`, and targeted Python checks) and record results here
 
-- Split pipeline responsibilities more clearly
-- Add PMTiles build flow
-- Add sync step into `app/public/data/`
-- Add a one-command "refresh all layers" workflow that reads every layer declared in `data-pipeline/sources/sources.yaml`
-
-### Phase 4.3 Chart data
-
-Description of feature requirements: for the thematic layers during data preparation add routines to prepare summary data for charts i.e. % area of each crop type. Wire this in the existing CHART.js
-
-
-### Phase 5: 
-
-### Phase 6: Documentation
-
-Status: Pending
 
 Planned:
 
-- Rewrite root `README.md`
-- Document app architecture
-- Document pipeline workflow
-- Document how to add labs and layers
-
-
-## Future pipeline feature
-
-Requested next convenience feature:
-
-- Add a script or command that prepares all spatial layers declared in `data-pipeline/sources/sources.yaml`
-- Goal: one command to refresh all layer outputs instead of building each layer manually
+- Add working example of ingestion and preparation of a vector data source
+- Add tests to ensure consistency of outputs from both PMTiles and vector equivalent processing routines. 
+- Add a one-command "refresh all layers" workflow that reads every layer declared in `data-pipeline/sources/sources.yaml`: Goal: one command to refresh all layer outputs instead of building each layer manually:
 
 Likely shape:
 
@@ -183,6 +125,27 @@ Expected behavior:
 - build each layer in sequence
 - report successes and failures clearly
 - optionally run `python sync.py` at the end
+
+### Phase 4.3 Chart data
+
+Description of feature requirements: for the thematic layers during data preparation add routines to prepare summary data for charts i.e. % area of each crop type. Wire this in the existing CHART.js. THis will be difficult as different data sources will require different charts. 
+ 
+
+### Phase 5: Documentation
+
+Status: Pending
+
+Planned:
+
+- Rewrite root `README.md`
+- Document app architecture
+- Document pipeline workflow
+- Document how to add labs and layers
+
+
+## Future pipeline feature
+
+
 
 ### Phase 3 — Real map (react-leaflet + PMTiles)
 - Install `react-leaflet`, `leaflet`, `protomaps-leaflet`, `pmtiles`

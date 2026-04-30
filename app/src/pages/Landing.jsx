@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { C } from '../theme.js'
 import { LL_ICONS } from '../data/ll_icons.js'
 import { LandingMap } from '../components/LandingMap.jsx'
+import { PreliminaryDataBadge } from '../components/PreliminaryDataBadge.jsx'
 
 export function Landing({ lls, loading }) {
   const { t } = useTranslation()
@@ -185,6 +186,11 @@ function LLCard({ ll, onPick }) {
         >
           {ll.tagline}
         </div>
+        {ll.mock ? (
+          <div style={{ marginTop: 8 }}>
+            <PreliminaryDataBadge />
+          </div>
+        ) : null}
       </div>
       <div style={{ fontSize: 18, color: C.muted }}>→</div>
     </button>

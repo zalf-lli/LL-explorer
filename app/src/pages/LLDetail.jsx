@@ -6,9 +6,9 @@ import { LLBadge } from '../components/LLBadge.jsx'
 import { KPIStrip } from '../components/KPIStrip.jsx'
 import { BarChart } from '../components/BarChart.jsx'
 import { LayerTabs } from '../components/LayerTabs.jsx'
+import { PreliminaryDataBadge } from '../components/PreliminaryDataBadge.jsx'
 import { TextBlock } from '../components/TextBlock.jsx'
 
-// Code-split: Leaflet will live in this chunk in Phase 3.
 const LLMap = lazy(() => import('../components/LLMap/index.jsx'))
 
 const LAYOUT_OPTIONS = [
@@ -83,12 +83,12 @@ function LayoutSwitcher({ layout, onChange }) {
       >
         {t('llDetail.designOption')}
       </span>
-      {LAYOUT_OPTIONS.map((o) => {
-        const isActive = layout === o.id
+      {LAYOUT_OPTIONS.map((option) => {
+        const isActive = layout === option.id
         return (
           <button
-            key={o.id}
-            onClick={() => onChange(o.id)}
+            key={option.id}
+            onClick={() => onChange(option.id)}
             style={{
               padding: '6px 16px',
               borderRadius: 6,
@@ -103,8 +103,8 @@ function LayoutSwitcher({ layout, onChange }) {
               gap: 0,
             }}
           >
-            <span style={{ fontSize: 12, fontWeight: 800 }}>{t(`llDetail.option${o.id}`)}</span>
-            <span style={{ fontSize: 10, opacity: 0.8, fontWeight: 500 }}>{t(`llDetail.option${o.id}Sub`)}</span>
+            <span style={{ fontSize: 12, fontWeight: 800 }}>{t(`llDetail.option${option.id}`)}</span>
+            <span style={{ fontSize: 10, opacity: 0.8, fontWeight: 500 }}>{t(`llDetail.option${option.id}Sub`)}</span>
           </button>
         )
       })}
@@ -127,7 +127,6 @@ function LayoutSwitcher({ layout, onChange }) {
 
 function useLayerState() {
   const [layer, setLayerRaw] = useState('landuse')
-  // startTransition keeps the map/chart swap non-blocking — tab clicks stay crisp.
   const setLayer = (id) => startTransition(() => setLayerRaw(id))
   return [layer, setLayer]
 }
@@ -183,6 +182,11 @@ function LayoutSplit({ ll }) {
               <div style={{ fontSize: 13, color: C.greenMid, marginTop: 4, maxWidth: 380 }}>
                 {ll.tagline}
               </div>
+              {ll.mock ? (
+                <div style={{ marginTop: 8 }}>
+                  <PreliminaryDataBadge />
+                </div>
+              ) : null}
               <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>{ll.region}</div>
             </div>
           </div>
@@ -271,6 +275,11 @@ function LayoutStacked({ ll }) {
           <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', marginTop: 4 }}>
             {ll.tagline}
           </div>
+          {ll.mock ? (
+            <div style={{ marginTop: 10 }}>
+              <PreliminaryDataBadge variant="dark" />
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -404,7 +413,7 @@ function MapFallback() {
         color: C.muted,
         fontSize: 13,
       }}
-      >
+    >
       {t('common.loadingMap')}
     </div>
   )
