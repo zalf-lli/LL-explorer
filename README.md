@@ -1,4 +1,4 @@
-# LL Explorer
+# Living Lab Explorer
 
 Bilingual React app for exploring five German agricultural Living Labs.
 
