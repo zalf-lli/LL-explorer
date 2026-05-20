@@ -4,8 +4,6 @@
     "contact": "lab1@zalf.de",
     "nuts3": [
       "DE409",
-      "DE40A",
-      "DE40B",
       "DE40C"
     ],
     "mock": true,
@@ -111,7 +109,6 @@
     "slug": "havellandisches-luch",
     "contact": "lab2@zalf.de",
     "nuts3": [
-      "DE406",
       "DE408"
     ],
     "mock": true,
